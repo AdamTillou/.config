@@ -1,0 +1,8 @@
+2020/10/02-22:37:18.565 e39b Reusing MANIFEST /home/adam_tillou/.config/vivaldi/Default/IndexedDB/https_docs.google.com_0.indexeddb.leveldb/MANIFEST-000001
+2020/10/02-22:37:18.565 e39b Recovering log #103
+2020/10/02-22:37:18.565 e39b Reusing old log /home/adam_tillou/.config/vivaldi/Default/IndexedDB/https_docs.google.com_0.indexeddb.leveldb/000103.log 
+2020/10/02-22:37:34.870 b2ca Level-0 table #107: started
+2020/10/02-22:37:34.870 b2ca Level-0 table #107: 0 bytes OK
+2020/10/02-22:37:34.874 b2ca Delete type=0 #103
+2020/10/02-22:37:34.874 b2ca Manual compaction at level-0 from (begin) .. (end); will stop at (end)
+2020/10/02-22:37:34.874 b2ca Manual compaction at level-1 from (begin) .. (end); will stop at (end)

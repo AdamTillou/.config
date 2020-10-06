@@ -1,0 +1,15 @@
+2020/10/02-22:08:04.002 dcf7 Reusing MANIFEST /home/adam_tillou/.config/vivaldi/Default/IndexedDB/https_drive.google.com_0.indexeddb.leveldb/MANIFEST-000001
+2020/10/02-22:08:04.002 dcf7 Recovering log #15
+2020/10/02-22:08:04.002 dcf7 Reusing old log /home/adam_tillou/.config/vivaldi/Default/IndexedDB/https_drive.google.com_0.indexeddb.leveldb/000015.log 
+2020/10/02-22:08:17.276 b2ca Level-0 table #20: started
+2020/10/02-22:08:17.280 b2ca Level-0 table #20: 439527 bytes OK
+2020/10/02-22:08:17.282 b2ca Delete type=0 #15
+2020/10/02-22:08:17.283 b2ca Manual compaction at level-0 from (begin) .. (end); will stop at (end)
+2020/10/02-22:08:17.283 b2ca Manual compaction at level-1 from (begin) .. (end); will stop at '\x00\x01\x03\x03\x01'\x002\x006\x00f\x001\x004\x00e\x009\x00c\x001\x002\x00e\x005\x00f\x00e\x008\x006\x00a\x001\x002\x00c\x005\x00b\x00b\x00a\x000\x005\x00d\x009\x008\x006\x009\x00e\x00_\x003\x00_\x002\x00:\x000\x000' @ 2417 : 0
+2020/10/02-22:08:17.283 b2ca Compacting 1@1 + 1@2 files
+2020/10/02-22:08:17.286 b2ca Generated table #21@1: 99 keys, 143345 bytes
+2020/10/02-22:08:17.286 b2ca Compacted 1@1 + 1@2 files => 143345 bytes
+2020/10/02-22:08:17.287 b2ca compacted to: files[ 0 0 1 0 0 0 0 ]
+2020/10/02-22:08:17.287 b2ca Delete type=2 #20
+2020/10/02-22:08:17.287 b2ca Delete type=2 #17
+2020/10/02-22:08:17.287 b2ca Manual compaction at level-1 from '\x00\x01\x03\x03\x01'\x002\x006\x00f\x001\x004\x00e\x009\x00c\x001\x002\x00e\x005\x00f\x00e\x008\x006\x00a\x001\x002\x00c\x005\x00b\x00b\x00a\x000\x005\x00d\x009\x008\x006\x009\x00e\x00_\x003\x00_\x002\x00:\x000\x000' @ 2417 : 0 .. (end); will stop at (end)

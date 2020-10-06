@@ -1,0 +1,19 @@
+la
+ls
+ls -A
+vim .zshrc
+zsh
+ls -A
+mkdir .zsh
+mv .zshrc .zsh/zshrc
+ls
+zsh
+rm .zshrc
+zsh
+vim .zshrc
+rm .zsh/zshrc
+vim .zshrc
+zsh
+vim .zshrc
+vim .zshrc
+zsh

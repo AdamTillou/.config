@@ -1,0 +1,5 @@
+2020/09/29-09:32:05.709 93cf Reusing MANIFEST /home/adam_tillou/.config/vivaldi/Default/IndexedDB/https_app.screencastify.com_0.indexeddb.leveldb/MANIFEST-000001
+2020/09/29-09:32:26.749 8966 Level-0 table #5: started
+2020/09/29-09:32:26.752 8966 Level-0 table #5: 12448 bytes OK
+2020/09/29-09:32:26.754 8966 Delete type=0 #3
+2020/09/29-09:32:26.754 8966 Manual compaction at level-0 from (begin) .. (end); will stop at (end)

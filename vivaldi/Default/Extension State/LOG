@@ -1,0 +1,21 @@
+2020/10/04-01:01:37.181 2a464 Reusing MANIFEST /home/adam_tillou/.config/vivaldi/Default/Extension State/MANIFEST-000001
+2020/10/04-01:01:37.181 2a464 Recovering log #134
+2020/10/04-01:01:37.182 2a464 Reusing old log /home/adam_tillou/.config/vivaldi/Default/Extension State/000134.log 
+2020/10/04-13:55:13.854 2b252 Level-0 table #138: started
+2020/10/04-13:55:13.866 2b252 Level-0 table #138: 2327708 bytes OK
+2020/10/04-13:55:13.868 2b252 Delete type=0 #134
+2020/10/04-13:55:13.870 2b252 Compacting 4@0 + 1@1 files
+2020/10/04-13:55:13.878 2b252 Generated table #139@0: 7 keys, 16935 bytes
+2020/10/04-13:55:13.878 2b252 Compacted 4@0 + 1@1 files => 16935 bytes
+2020/10/04-13:55:13.879 2b252 compacted to: files[ 0 1 0 0 0 0 0 ]
+2020/10/04-13:55:13.879 2b252 Delete type=2 #133
+2020/10/04-13:55:13.879 2b252 Delete type=2 #135
+2020/10/04-13:55:13.879 2b252 Delete type=2 #129
+2020/10/04-13:55:13.879 2b252 Delete type=2 #138
+2020/10/04-13:55:13.879 2b252 Delete type=2 #131
+2020/10/04-16:20:01.725 2b252 Level-0 table #141: started
+2020/10/04-16:20:01.738 2b252 Level-0 table #141: 2292961 bytes OK
+2020/10/04-16:20:01.741 2b252 Delete type=0 #137
+2020/10/04-19:55:15.551 2b252 Level-0 table #143: started
+2020/10/04-19:55:15.583 2b252 Level-0 table #143: 2276648 bytes OK
+2020/10/04-19:55:15.586 2b252 Delete type=0 #140
