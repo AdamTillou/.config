@@ -1,5 +1,0 @@
-2020/10/03-01:04:37.147 12871 Reusing MANIFEST /home/adam_tillou/.config/vivaldi/Default/IndexedDB/https_calendar.google.com_0.indexeddb.leveldb/MANIFEST-000001
-2020/10/03-01:04:40.202 12aba Level-0 table #5: started
-2020/10/03-01:04:40.206 12aba Level-0 table #5: 1287 bytes OK
-2020/10/03-01:04:40.208 12aba Delete type=0 #3
-2020/10/03-01:04:40.208 12aba Manual compaction at level-0 from (begin) .. (end); will stop at (end)

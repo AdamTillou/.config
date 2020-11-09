@@ -1,4 +1,0 @@
-2020/10/04-00:16:26.947 29d76 Reusing MANIFEST /home/adam_tillou/.config/vivaldi/Default/VideoDecodeStats/MANIFEST-000001
-2020/10/04-00:16:26.947 29d76 Recovering log #3
-2020/10/04-00:16:26.948 29d76 (ignoring error) /home/adam_tillou/.config/vivaldi/Default/VideoDecodeStats/000003.log: dropping 5670 bytes; Corruption: checksum mismatch
-2020/10/04-00:16:26.948 29d76 Reusing old log /home/adam_tillou/.config/vivaldi/Default/VideoDecodeStats/000003.log 

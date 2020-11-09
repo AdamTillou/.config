@@ -1,5 +1,0 @@
-2020/09/29-13:19:59.506 cadd Reusing MANIFEST /home/adam_tillou/.config/vivaldi/Default/IndexedDB/https_twitter.com_0.indexeddb.leveldb/MANIFEST-000001
-2020/09/29-13:55:29.964 8966 Level-0 table #5: started
-2020/09/29-13:55:29.965 8966 Level-0 table #5: 1262 bytes OK
-2020/09/29-13:55:29.967 8966 Delete type=0 #3
-2020/09/29-13:55:29.967 8966 Manual compaction at level-0 from (begin) .. (end); will stop at (end)
