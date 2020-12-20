@@ -82,10 +82,7 @@ noremap <C-l> <C-w>l
 	noremap <silent> <C-s> <Esc>:w<CR>
 
 	" Map Ctrl+X to exit
-	noremap <C-x> <Esc>:wa<CR>:qa!<CR>
-
-	" Map Ctrl+Q to quit
-	noremap <C-q> <Esc>:q<CR>
+	noremap <silent> <C-x> <Esc>:wa<CR>:qa!<CR>
 
 	" Map Ctrl+R to reload the config file
 	noremap <silent> <C-r> :exec "source " . g:config_path . "/init.vim"<CR>
@@ -121,11 +118,20 @@ noremap <C-l> <C-w>l
 	vnoremap <nowait> i I
 	vnoremap <nowait> a A
 
-	" Map g+./, to increment/decrement a number
-	noremap g. <C-a>
-	noremap g, <C-x>
-	vnoremap g> g<C-a>
-	vnoremap g< g<C-x>
+	" Map -/=/_/+ to increment/decrement numbers in visual mode
+	vnoremap - <Esc><C-x>gv
+	vnoremap = <Esc><C-a>gv
+	vnoremap _ g<C-x>gv
+	vnoremap + g<C-a>gv
+	vnoremap g- I0<Esc>gvg<C-x>gv
+	vnoremap g= I0<Esc>gvg<C-a>gv
+	
+	" Map Space to enable the current completion
+	noremap! <expr> <Tab> pumvisible() ? "<Space><BS>" : "<Space>"
+	
+	" Map g= / g- to increment/decrement a number in normal mode
+	nnoremap g- <C-x>
+	nnoremap g= <C-a>
 	
 	" Easier indenting
 	nnoremap > mz>>`zl
@@ -152,6 +158,9 @@ noremap <C-l> <C-w>l
 
 	" Insert mode mappings
 	" Movement mappings {{{1
+	noremap! <expr> <Down> pumvisible() ? "<Tab>" : "<Down>"
+	noremap! <expr> <Up> pumvisible() ? "<Tab>" : "<Up>"
+	
 	map! <A-h> <Left>
 	map! <A-j> <Down>
 	map! <A-k> <Up>
@@ -215,7 +224,7 @@ noremap <C-l> <C-w>l
 	nnoremap <leader>sa :call plugins#NCM2Toggle()
 	
 	" Set sidebar color
-	nnoremap <leader>sc :let g:wm_sidebar_color = g:colors.sidebar<CR>:let g:wm_window_color = g:colors.bg<CR>
+	nnoremap <leader>sc :let g:wm#sidebar_color = g:colors.sidebar<CR>:let g:wm#window_color = g:colors.bg<CR>
 	" }}}
 	" Getting values {{{1
 	nnoremap <leader>gc :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'

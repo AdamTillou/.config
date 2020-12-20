@@ -33,8 +33,9 @@ function! functions#FloatingWindow()
 	let opts.width -= 4
 	
 	call nvim_open_win(nvim_create_buf(v:false, v:true), v:true, opts)
+	nnoremap <buffer> <Esc> :q<CR>:q<CR>
 	
-	au BufWipeout <buffer> exe 'bw '.s:buf
+	au BufWipeout <buffer> exe 'bw '. s:buf
 endfunction
 " }}}
 " Open help menu in floating window {{{1

@@ -10,7 +10,6 @@ function! colors#Initialize()
 	call s:ColorVariables()
 	call s:HighlightFunction()
 	call s:ColorGroups()
-	call s:StatuslineColors()
 endfunction
 
 function! s:ColorVariables() " {{{1
@@ -28,11 +27,11 @@ function! s:ColorVariables() " {{{1
 	let g:colors.blue = {"gui": "#5FAFD7", "cterm": "074"}
 	let g:colors.purple = {"gui": "#AF87D7", "cterm": "140"}
 
-	let g:colors.sidebar = {"gui": "#1B1D24", "cterm": "0"}
-	let g:colors.bg = {"gui": "#22252C", "cterm": "8"}
+	let g:colors.sidebar = {"gui": "#181D22", "cterm": "NONE"}
+	let g:colors.bg = {"gui": "#282C34", "cterm": "NONE"}
 	let g:colors.active_bg = g:colors.bg
 	let g:colors.popup = {"gui": "#30343C", "cterm": "4"}
-endfunction " }}} " }}}
+endfunction " }}}
 function! s:HighlightFunction() " {{{1
 	function! g:HL(group, fg, bg, attr)
 		if type(a:fg) == type({})
@@ -50,6 +49,7 @@ endfunction " }}}
 function! s:ColorGroups() " {{{1
 	call g:HL("Regular", g:colors.fg, g:colors.bg, "")
 	call g:HL("Normal", g:colors.fg, g:colors.bg, "")
+	call g:HL("NormalFloat", g:colors.fg, g:colors.bg, "")
 	call g:HL("NonText", g:colors.grey2, "", "")
 
 	call g:HL("Cursor", "", g:colors.grey2, "")
@@ -58,7 +58,7 @@ function! s:ColorGroups() " {{{1
 	call g:HL("LineNr", g:colors.grey2, "", "")
 	call g:HL("CursorLineNr", g:colors.white, g:colors.popup, "bold")
 	call g:HL("EndOfBuffer", g:colors.bg, "", "")
-	call g:HL("MsgArea", "", g:colors.sidebar, "")
+	call g:HL("MsgArea", "", g:colors.bg, "")
 
 	call g:HL("DiffAdd", g:colors.white, "", "")
 	call g:HL("DiffChange", g:colors.white, "", "")
@@ -80,8 +80,8 @@ function! s:ColorGroups() " {{{1
 	call g:HL("SpellLocal", g:colors.yellow, "", "")
 	call g:HL("SpellRare", g:colors.yellow, "", "")
 
-	call g:HL("StatusLine", g:colors.fg, g:colors.sidebar, "bold")
-	call g:HL("StatusLineNC", g:colors.fg, g:colors.grey3, "")
+	call g:HL("StatusLine", g:colors.fg, "", "strikethrough")
+	call g:HL("StatusLineNC", g:colors.grey2, "", "underline")
 	call g:HL("TabLine", g:colors.fg, g:colors.bg, "none")
 	call g:HL("TabLineSel", g:colors.white, g:colors.bg, "bold")
 	call g:HL("TabLineFill", "", "", "none")
@@ -139,19 +139,6 @@ function! s:ColorGroups() " {{{1
 	call g:HL("Debug", g:colors.yellow, "", "")
 	call g:HL("Underlined", g:colors.yellow, "", "")
 	call g:HL("Ignore", g:colors.yellow, "", "")
-	call g:HL("Error", g:colors.red, g:colors.bg, "italic")
+	call g:HL("Error", g:colors.red, g:colors.bg, "underline")
 	call g:HL("Todo", g:colors.yellow, g:colors.bg, "")
-endfunction " }}}
-function! s:StatuslineColors() " {{{1
-	let g:colors.sline1 = {"gui":"#00004F", "cterm":17}
-	let g:colors.sline2 = {"gui":"#0000AF", "cterm":19}
-	let g:colors.sline3 = {"gui":"#0000FF", "cterm":21}
-	for i in range(1, 3)
-		exec "let stcol = g:colors.sline" . i
-		call g:HL("StatuslineColor" . i, g:colors.fg, stcol, "bold")
-	endfor
-
-	call g:HL("StatuslineError", g:colors.red, g:colors.sline2, "bold")
-	call g:HL("StatuslineWarning", g:colors.yellow, g:colors.sline2, "bold")
-	call g:HL("StatuslineFirstError", g:colors.red, g:colors.sidebar, "bold")
 endfunction " }}}

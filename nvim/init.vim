@@ -4,15 +4,15 @@
 " Author:       Adam Tillou
 " ==============================================================================
 
-let already_loaded = 0
+"let already_loaded = 0
 
 " Set up runtimepath
 set runtimepath=''
 let g:config_path = expand('<sfile>:p:h')
 let &runtimepath = printf('%s/vimfiles,%s,%s/vimfiles/after', $VIM, $VIMRUNTIME, $VIM)
 let &runtimepath = printf('%s,%s,%s/after', g:config_path, &runtimepath, g:config_path)
-
-" Set leader key
+"
+"" Set leader key
 let mapleader="'"
 
 " Initialize basic settings
@@ -24,6 +24,9 @@ call colors#Initialize()
 " Initialize mappings
 call mappings#Initialize()
 
+" Initialize the statusline
+call statusline#Initialize()
+
 " Initialize functions
 call functions#Initialize()
 
@@ -33,15 +36,28 @@ call plug#begin(g:config_path . "/plugins")
 " Show syntax errors
 Plug 'dense-analysis/ale'
 
-" Autocompletion
-Plug 'ncm2/ncm2'
-Plug 'roxma/nvim-yarp'
+" Completion
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+Plug 'Shougo/neco-syntax'
+Plug 'tbodt/deoplete-tabnine', { 'do': './install.sh' }
 
-" Git changes
-Plug 'airblade/vim-gitgutter'
+"call deoplete#custom#var('tabnine', {
+"\ 'line_limit': 500,
+"\ 'max_num_results': 20,
+"\ })
 
-" Git commands
-Plug 'tpope/vim-fugitive'
+" Snippets
+Plug 'sirver/UltiSnips'
+Plug 'honza/vim-snippets'
+
+" Window manager
+Plug 'AdamTillou/vim-wm'
+
+" File tree
+Plug 'AdamTillou/vim-filetree'
+
+" Undo tree
+Plug 'simnalamburt/vim-mundo'
 
 " Highlight hex codes with the corresponding color
 Plug 'ap/vim-css-color'
@@ -49,29 +65,11 @@ Plug 'ap/vim-css-color'
 " Multiple cursors
 Plug 'terryma/vim-multiple-cursors'
 
-" Statusline
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-
-" Snippets
-Plug 'sirver/UltiSnips'
-Plug 'honza/vim-snippets'
-
-" Undo tree
-Plug 'simnalamburt/vim-mundo'
-
 " File overview
 Plug 'vim-scripts/taglist.vim'
 
-" File tree
-Plug 'AdamTillou/vim-filetree'
-
-" NCM2 completion sources
-Plug 'ncm2/ncm2-bufword' " Words in buffer
-Plug 'ncm2/ncm2-clang' " C languages
-Plug 'ncm2/ncm2-jedi' " Python
-Plug 'ObserverOfTime/ncm2-jc2', {'for': ['java', 'jsp']} " Java
-Plug 'artur-shaik/vim-javacomplete2', {'for': ['java', 'jsp']} " Java
+" Fuzzy searching
+Plug 'akiyosi/gonvim-fuzzy'
 call plug#end() " }}}
 call plugins#Initialize()
 
