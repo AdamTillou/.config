@@ -13,7 +13,7 @@ function! settings#Initialize()
 	set foldmethod=indent " Fold on indents by default
 	set list " Show hidden characters
 	set ve+=onemore " Allow the cursor to sit after the last character in the line
-	set completeopt=menuone,noselect
+	set completeopt=menuone,noinsert
 	
 	" Ignore cases in search, unless the search term contains an uppercase
 	set ignorecase

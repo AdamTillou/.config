@@ -38,13 +38,7 @@ Plug 'dense-analysis/ale'
 
 " Completion
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'Shougo/neco-syntax'
 Plug 'tbodt/deoplete-tabnine', { 'do': './install.sh' }
-
-"call deoplete#custom#var('tabnine', {
-"\ 'line_limit': 500,
-"\ 'max_num_results': 20,
-"\ })
 
 " Snippets
 Plug 'sirver/UltiSnips'
@@ -66,7 +60,7 @@ Plug 'ap/vim-css-color'
 Plug 'terryma/vim-multiple-cursors'
 
 " File overview
-Plug 'vim-scripts/taglist.vim'
+"Plug 'vim-scripts/taglist.vim'
 
 " Fuzzy searching
 Plug 'akiyosi/gonvim-fuzzy'

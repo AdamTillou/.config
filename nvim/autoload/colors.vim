@@ -18,7 +18,7 @@ function! s:ColorVariables() " {{{1
 	let g:colors.white = {"gui": "#D3D7DB", "cterm": "188"}
 	let g:colors.grey1 = {"gui": "#A4A8AC", "cterm": "248"}
 	let g:colors.grey2 = {"gui": "#7C8084", "cterm": "244"}
-	let g:colors.grey3 = {"gui": "#444444", "cterm": "238"}
+	let g:colors.grey3 = {"gui": "#30343C", "cterm": "238"}
 	let g:colors.black = {"gui": "#0E1216", "cterm": "233"}
 	let g:colors.red = {"gui": "#D75F5F", "cterm": "167"}
 	let g:colors.yellow = {"gui": "#FFD75F", "cterm": "221"}
@@ -28,9 +28,9 @@ function! s:ColorVariables() " {{{1
 	let g:colors.purple = {"gui": "#AF87D7", "cterm": "140"}
 
 	let g:colors.sidebar = {"gui": "#181D22", "cterm": "NONE"}
-	let g:colors.bg = {"gui": "#282C34", "cterm": "NONE"}
+	let g:colors.bg = {"gui": "#2F2F2F", "cterm": "NONE"}
 	let g:colors.active_bg = g:colors.bg
-	let g:colors.popup = {"gui": "#30343C", "cterm": "4"}
+	let g:colors.popup = {"gui": "#30343C", "cterm": "239"}
 endfunction " }}}
 function! s:HighlightFunction() " {{{1
 	function! g:HL(group, fg, bg, attr)

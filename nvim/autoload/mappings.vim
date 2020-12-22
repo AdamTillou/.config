@@ -126,9 +126,6 @@ noremap <C-l> <C-w>l
 	vnoremap g- I0<Esc>gvg<C-x>gv
 	vnoremap g= I0<Esc>gvg<C-a>gv
 	
-	" Map Space to enable the current completion
-	noremap! <expr> <Tab> pumvisible() ? "<Space><BS>" : "<Space>"
-	
 	" Map g= / g- to increment/decrement a number in normal mode
 	nnoremap g- <C-x>
 	nnoremap g= <C-a>
@@ -158,9 +155,6 @@ noremap <C-l> <C-w>l
 
 	" Insert mode mappings
 	" Movement mappings {{{1
-	noremap! <expr> <Down> pumvisible() ? "<Tab>" : "<Down>"
-	noremap! <expr> <Up> pumvisible() ? "<Tab>" : "<Up>"
-	
 	map! <A-h> <Left>
 	map! <A-j> <Down>
 	map! <A-k> <Up>
@@ -175,8 +169,7 @@ noremap <C-l> <C-w>l
 	imap <A-E> <Esc>Ea
 	imap <A-b> <Esc>bi
 	imap <A-B> <Esc>Bi
-	inoremap <expr> <A-j> pumvisible() ? "<C-n>" : "<Down>"
-	inoremap <expr> <A-k> pumvisible() ? "<C-p>" : "<Up>"
+	imap <expr> <Tab> pumvisible() ? "<C-y>" : "<Tab>"
 	" }}}
 	" Text modification mappings {{{1
 	imap <A-d> <Esc>ddi
