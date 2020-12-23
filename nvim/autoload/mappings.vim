@@ -2,10 +2,10 @@ function! mappings#Initialize()
 	" Basic mappings
 	" Movement mappings {{{1
 	" Set hjkl movements to not quit other mappings when going off an edge
-	noremap <expr> h col('.')==1 ? '' : 'h'
-	noremap <expr> l col('.')==col('$') ? '' : 'l'
-	noremap <expr> j line('.')==line('$') ? '' : 'j'
-	noremap <expr> k line('.')==1 ? '' : 'k'
+	noremap <expr> h col(".")==1 ? "" : "h"
+	noremap <expr> l col(".")==col("$") ? "" : "l"
+	noremap <expr> j line(".")==line("$") ? "" : "j"
+	noremap <expr> k line(".")==1 ? "" : "k"
 
 	" Set magnified hjkl movements
 	noremap H 4h
@@ -26,9 +26,8 @@ function! mappings#Initialize()
 	" Text modification mappings {{{1
 	noremap x "_x
 	noremap z "_X
-	noremap <expr> X col('.')==col('$') ? '' : '"_de'
-	noremap <expr> Z col('.')==1 ? '' : '"_db'
-
+	noremap X "_d/\%#.\s*\S*\zs<CR>
+	noremap Z "_d/\ze\S*\s*\%#<CR>
 	noremap d "_d
 	noremap D "_dd
 	nnoremap dd ^"_d$
@@ -36,12 +35,13 @@ function! mappings#Initialize()
 	noremap c "_c
 	noremap C "_cc
 
-	noremap s d
-	noremap S dd
-	nnoremap ss ^d$
+	noremap s "0d
+	noremap S "0dd
+	nnoremap ss ^"0d$
 
-	noremap Y yy
-	nnoremap yy mz^y$`z
+	noremap y "0y
+	noremap Y "0yy
+	nnoremap yy mz^"0y$`z
 	
 	" Map g+key to add to the register
 	nnoremap gaY "zyy:let @0 .= "\n" . @z<CR>:let @" = @0<CR>
@@ -85,7 +85,7 @@ noremap <C-l> <C-w>l
 	noremap <silent> <C-x> <Esc>:wa<CR>:qa!<CR>
 
 	" Map Ctrl+R to reload the config file
-	noremap <silent> <C-r> :exec "source " . g:config_path . "/init.vim"<CR>
+	noremap <silent> <C-r> :exec "source " . g:init#config . "/init.vim"<CR>
 	" }}}
 	" Useful mappings {{{1
 	" Map gq to macros and q to esc
@@ -103,7 +103,7 @@ noremap <C-l> <C-w>l
 	noremap O O-<C-u>
 
 	" Map <Esc> to stay on the same character
-	inoremap <expr> <Esc> col('.')==1 ? '<Esc>' : '<Esc>l'
+	inoremap <expr> <Esc> col(".")==1 ? "<Esc>" : "<Esc>l"
 
 	" Map Alt+q to esc
 	noremap <A-q> <Esc>l
@@ -220,7 +220,7 @@ noremap <C-l> <C-w>l
 	nnoremap <leader>sc :let g:wm#sidebar_color = g:colors.sidebar<CR>:let g:wm#window_color = g:colors.bg<CR>
 	" }}}
 	" Getting values {{{1
-	nnoremap <leader>gc :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
+	nnoremap <leader>gc :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . "> trans<"
 				\ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
 				\ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
 	" }}}

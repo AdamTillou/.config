@@ -10,7 +10,6 @@ function! settings#Initialize()
 	set noexpandtab " Use tabs instead of spaces for indents
 	set autoindent " Automatically indent new line to expected amount
 	set confirm " If a command requires an !, ask instead of returning an error
-	set foldmethod=indent " Fold on indents by default
 	set list " Show hidden characters
 	set ve+=onemore " Allow the cursor to sit after the last character in the line
 	set completeopt=menuone,noinsert

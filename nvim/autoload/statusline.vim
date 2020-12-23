@@ -18,12 +18,14 @@ endfunction
 function! s:SetStatuslineType(arg) " {{{1
 	if a:arg == 0
 		let g:sttype = 0
+		hi StatusLine cterm=strikethrough gui=strikethrough
 		hi StatusLineNC cterm=strikethrough gui=strikethrough
 		exec "set statusline=\\ "
 		set laststatus=0
 
 	elseif a:arg == 1
 		let g:sttype = 1
+		hi StatusLine cterm=bold gui=bold
 		hi StatusLineNC cterm=underline gui=underline
 		exec "set statusline=" . statusline#ComplexStatusline()
 		set laststatus=2
@@ -36,23 +38,20 @@ endfunction " }}}
 function! s:PrepareModules() " {{{1
 	" Set a template for statusline modules
 	let s:left_modules = [
-				\ {"value":"statusline#ShortLine()", "color":"StatuslineText"},
+				\ {"value":"statusline#ShortLine()", "color":"StatusLine"},
 				\ {"value":"statusline#Mode()", "color":"StatuslineMode"},
 				\ {"value":"'" . s:left_separator . "'", "color":"StatuslineSeparator"},
-				\ {"value":"statusline#BufferName()", "color":"StatuslineText", "min":10},
+				\ {"value":"statusline#BufferName()", "color":"StatusLine", "min":10},
 				\ {"value":"'" . s:left_separator . "'", "color":"StatuslineSeparator"}]
 	let s:right_modules = [
 				\ {"value":"'" . s:right_separator . "'", "color":"StatuslineSeparator"},
 				\ {"value":"statusline#Errors()", "color":"StatuslineError"},
 				\ {"value":"statusline#Warnings()", "color":"StatuslineWarning"},
 				\ {"value":"'" . s:right_separator . "'", "color":"StatuslineSeparator"},
-				\ {"value":"statusline#CursorLocation()", "color":"StatuslineText"}]
+				\ {"value":"statusline#CursorLocation()", "color":"StatusLine"}]
 endfunction " }}}
 function! s:PrepareColors() " {{{1
-	call g:HL("StatuslineText", "", "", "bold")
 	call g:HL("StatuslineSeparator", "", "", "bold")
-	call g:HL("Strikethrough", "", "", "strikethrough")
-	call g:HL("InactiveStrikethrough", g:colors.grey3, "", "strikethrough")
 
 	call g:HL("NormalMode", g:colors.blue, "", "bold")
 	call g:HL("CommandMode", g:colors.purple, "", "bold")
@@ -75,8 +74,8 @@ function! statusline#ComplexStatusline() " {{{1
 	endfor
 
 	" Create space in the center
-	let status_string .= s:AddModule({"value":"''", "color":"StatuslineText"})
-	let status_string .= "%#UtterNonsense#%="
+	let status_string .= s:AddModule({"value":"''", "color":"StatusLine"})
+	let status_string .= "%#StatusLineNC#%="
 
 	" Create left modules
 	for q in s:right_modules

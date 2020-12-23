@@ -10,6 +10,8 @@ function! colors#Initialize()
 	call s:ColorVariables()
 	call s:HighlightFunction()
 	call s:ColorGroups()
+	
+	nnoremap <leader>sc :call colors#SetSidebarHl()<CR>
 endfunction
 
 function! s:ColorVariables() " {{{1
@@ -47,18 +49,24 @@ function! s:HighlightFunction() " {{{1
 	endfun
 endfunction " }}}
 function! s:ColorGroups() " {{{1
+	" Sidebar groups
+	call g:HL("Sidebar", g:colors.fg, g:colors.sidebar, "")
+	call g:HL("SidebarEOB", g:colors.sidebar, g:colors.sidebar, "")
+	call g:HL("SidebarFold", g:colors.grey2, g:colors.sidebar, "")
+	call g:HL("SidebarSignColumn", "", g:colors.sidebar, "")
+	
 	call g:HL("Regular", g:colors.fg, g:colors.bg, "")
 	call g:HL("Normal", g:colors.fg, g:colors.bg, "")
 	call g:HL("NormalFloat", g:colors.fg, g:colors.bg, "")
 	call g:HL("NonText", g:colors.grey2, "", "")
+	call g:HL("EndOfBuffer", g:colors.bg, "", "")
+	call g:HL("MsgArea", "", g:colors.sidebar, "")
 
 	call g:HL("Cursor", "", g:colors.grey2, "")
 	call g:HL("CursorColumn", "", "", "")
 	call g:HL("CursorLine", "", "", "bold")
 	call g:HL("LineNr", g:colors.grey2, "", "")
 	call g:HL("CursorLineNr", g:colors.white, g:colors.popup, "bold")
-	call g:HL("EndOfBuffer", g:colors.bg, "", "")
-	call g:HL("MsgArea", "", g:colors.bg, "")
 
 	call g:HL("DiffAdd", g:colors.white, "", "")
 	call g:HL("DiffChange", g:colors.white, "", "")
@@ -80,7 +88,7 @@ function! s:ColorGroups() " {{{1
 	call g:HL("SpellLocal", g:colors.yellow, "", "")
 	call g:HL("SpellRare", g:colors.yellow, "", "")
 
-	call g:HL("StatusLine", g:colors.fg, "", "strikethrough")
+	call g:HL("StatusLine", g:colors.fg, "", "bold")
 	call g:HL("StatusLineNC", g:colors.grey2, "", "underline")
 	call g:HL("TabLine", g:colors.fg, g:colors.bg, "none")
 	call g:HL("TabLineSel", g:colors.white, g:colors.bg, "bold")
@@ -141,4 +149,7 @@ function! s:ColorGroups() " {{{1
 	call g:HL("Ignore", g:colors.yellow, "", "")
 	call g:HL("Error", g:colors.red, g:colors.bg, "underline")
 	call g:HL("Todo", g:colors.yellow, g:colors.bg, "")
+endfunction " }}}
+function! colors#SetSidebarHl() " {{{1
+	set winhl=Normal:Sidebar,EndOfBuffer:SidebarEOB,Folded:SidebarFold,SignColumn:SidebarSignColumn
 endfunction " }}}

@@ -8,9 +8,9 @@
 
 " Set up runtimepath
 set runtimepath=''
-let g:config_path = expand('<sfile>:p:h')
+let g:init#config = expand('<sfile>:p:h')
 let &runtimepath = printf('%s/vimfiles,%s,%s/vimfiles/after', $VIM, $VIMRUNTIME, $VIM)
-let &runtimepath = printf('%s,%s,%s/after', g:config_path, &runtimepath, g:config_path)
+let &runtimepath = printf('%s,%s,%s/after', g:init#config, &runtimepath, g:init#config)
 "
 "" Set leader key
 let mapleader="'"
@@ -32,10 +32,7 @@ call functions#Initialize()
 
 " Initialize plugins
 " Add plugins to runtime path " {{{1
-call plug#begin(g:config_path . "/plugins")
-" Show syntax errors
-Plug 'dense-analysis/ale'
-
+call plug#begin(g:init#config . "/plugins")
 " Completion
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'tbodt/deoplete-tabnine', { 'do': './install.sh' }
@@ -43,6 +40,12 @@ Plug 'tbodt/deoplete-tabnine', { 'do': './install.sh' }
 " Snippets
 Plug 'sirver/UltiSnips'
 Plug 'honza/vim-snippets'
+
+" Show syntax errors
+Plug 'dense-analysis/ale'
+
+" Graphical debugger
+Plug 'puremourning/vimspector'
 
 " Window manager
 Plug 'AdamTillou/vim-wm'

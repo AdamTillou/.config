@@ -1,0 +1,15 @@
+{
+	"configurations": {
+		"Launch": {
+			"adapter": "debugpy",
+			"configuration": {
+				"request": "launch",
+				"cwd": "${workspaceRoot}",
+				"program": "----file-to-execute----",
+				"externalConsole": true,
+				"stopOnEntry": true,
+				"MIMode": "gdb"
+			}
+		}
+	}
+}
