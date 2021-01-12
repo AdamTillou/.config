@@ -6,11 +6,11 @@ function! colors#Initialize()
 	set t_Co=256
 	filetype plugin on
 	set background=dark
-	
+
 	call s:ColorVariables()
 	call s:HighlightFunction()
 	call s:ColorGroups()
-	
+
 	nnoremap <leader>sc :call colors#SetSidebarHl()<CR>
 endfunction
 
@@ -54,7 +54,7 @@ function! s:ColorGroups() " {{{1
 	call g:HL("SidebarEOB", g:colors.sidebar, g:colors.sidebar, "")
 	call g:HL("SidebarFold", g:colors.grey2, g:colors.sidebar, "")
 	call g:HL("SidebarSignColumn", "", g:colors.sidebar, "")
-	
+
 	call g:HL("Regular", g:colors.fg, g:colors.bg, "")
 	call g:HL("Normal", g:colors.fg, g:colors.bg, "")
 	call g:HL("NormalFloat", g:colors.fg, g:colors.bg, "")
@@ -147,8 +147,10 @@ function! s:ColorGroups() " {{{1
 	call g:HL("Debug", g:colors.yellow, "", "")
 	call g:HL("Underlined", g:colors.yellow, "", "")
 	call g:HL("Ignore", g:colors.yellow, "", "")
-	call g:HL("Error", g:colors.red, g:colors.bg, "underline")
 	call g:HL("Todo", g:colors.yellow, g:colors.bg, "")
+
+	call g:HL("Error", {"gui":"#FF0000", "cterm":196}, g:colors.bg, "italic")
+	call g:HL("StyleError", {"gui":"#FF5F00", "cterm":202}, g:colors.bg, "italic")
 endfunction " }}}
 function! colors#SetSidebarHl() " {{{1
 	set winhl=Normal:Sidebar,EndOfBuffer:SidebarEOB,Folded:SidebarFold,SignColumn:SidebarSignColumn

@@ -161,11 +161,11 @@ function! statusline#BufferName() " {{{1
 	endif
 endfunction " }}}
 function! statusline#Errors() " {{{1
-	let error_ct = ale#statusline#Count(bufnr()).error + ale#statusline#Count(bufnr()).style_error
+	let error_ct = 0
 	return (" " . error_ct)
 endfunction " }}}
 function! statusline#Warnings() " {{{
-	let warning_ct = ale#statusline#Count(" . buffer . ").warning + ale#statusline#Count(" . buffer . ").style_warning
+	let warning_ct = 0
 	return (" " . warning_ct)
 endfunction " }}}
 function! statusline#CursorLocation() " {{{1

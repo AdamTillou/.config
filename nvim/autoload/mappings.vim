@@ -26,8 +26,8 @@ function! mappings#Initialize()
 	" Text modification mappings {{{1
 	noremap x "_x
 	noremap z "_X
-	noremap X "_d/\%#.\s*\S*\zs<CR>
-	noremap Z "_d/\ze\S*\s*\%#<CR>
+	noremap <silent> X "_d/\%#.\s*\S*\zs<CR>
+	noremap <silent> Z "_d/\ze\S*\s*\%#<CR>
 	noremap d "_d
 	noremap D "_dd
 	nnoremap dd ^"_d$
@@ -35,12 +35,11 @@ function! mappings#Initialize()
 	noremap c "_c
 	noremap C "_cc
 
-	noremap s "0d
-	noremap S "0dd
+	noremap s d
+	noremap S dd
 	nnoremap ss ^"0d$
 
-	noremap y "0y
-	noremap Y "0yy
+	noremap Y yy
 	nnoremap yy mz^"0y$`z
 	
 	" Map g+key to add to the register
@@ -200,45 +199,5 @@ noremap <C-l> <C-w>l
 	imap <A-f>3 <Esc>A{<Right>{{3<CR><CR>" }<Right>}}<Up>
 	imap <A-f>4 <Esc>A{<Right>{{4<CR><CR>" }<Right>}}<Up>
 	imap <A-f>5 <Esc>A{<Right>{{5<CR><CR>" }<Right>}}<Up>
-	" }}}
-
-	" Leader mappings
-	" Settings mappings {{{1
-	" Set the folding method
-	nnoremap <leader>sfi :setlocal foldmethod=indent<CR>
-	nnoremap <leader>sfb :setlocal foldmethod=marker<CR>
-	nnoremap <leader>sfm :setlocal foldmethod=manual<CR>
-	nnoremap <leader>sfs :setlocal foldmethod=syntax<CR>
-
-	" Toggle showing special characters
-	nnoremap <leader>sl :setlocal list!<CR>
-	
-	" Toggle autocompletion
-	nnoremap <leader>sa :call plugins#NCM2Toggle()
-	
-	" Set sidebar color
-	nnoremap <leader>sc :let g:wm#sidebar_color = g:colors.sidebar<CR>:let g:wm#window_color = g:colors.bg<CR>
-	" }}}
-	" Getting values {{{1
-	nnoremap <leader>gc :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . "> trans<"
-				\ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
-				\ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
-	" }}}
-	" Inserting text {{{1
-	" Map leader+i+l to insert a better horizontal line
-	nnoremap <leader>il i│<Esc>l
-
-	" Map leader+i+# to insert a comment heading
-	nnoremap <leader>i# i#<Esc>yl79pyypO# <Esc>yl77pi##<Esc>03lR
-	" }}}
-	" Useful commands {{{1
-	" Map leader+;+s to run the substitute command
-	nnoremap <leader>cs :%s///g<Left><Left><Left>
-	vnoremap <leader>cs :s/\%V//g<Left><Left><Left>
-	vnoremap / /\%V
-	" }}}
-	" Misc {{{1
-	" Map leader+f to format the file
-	nnoremap <leader>f mzgg=G`z
 	" }}}
 endfunction

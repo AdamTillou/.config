@@ -2,6 +2,9 @@ function! functions#Initialize()
 	" Map H to open the help menu, but in a floating window
 	command! -nargs=1 H call functions#Help(0, "<args>")
 	command! -nargs=1 HG call functions#Help(1, "<args>")
+
+	" Create a command to show how many matches of a pattern are in a file
+	command -nargs=1 GetMatches let g:regex_list = functions#GetMatches(<args>) | echo string(len(g:regex_list)) 'matches found, check g:regex_list for full list'
 endfunction
 
 " Get the character under the cursor {{{1
@@ -20,21 +23,21 @@ function! functions#FloatingWindow()
 	let top = "╭" . repeat("─", width - 2) . "╮"
 	let mid = "│" . repeat(" ", width - 2) . "│"
 	let bot = "╰" . repeat("─", width - 2) . "╯"
-	
+
 	let lines = [top] + repeat([mid], height - 2) + [bot]
 	let s:buf = nvim_create_buf(v:false, v:true)
-	
+
 	call nvim_buf_set_lines(s:buf, 0, -1, v:true, lines)
 	call nvim_open_win(s:buf, v:true, opts)
-	
+
 	let opts.row += 1
 	let opts.height -= 2
 	let opts.col += 2
 	let opts.width -= 4
-	
+
 	call nvim_open_win(nvim_create_buf(v:false, v:true), v:true, opts)
 	nnoremap <buffer> <Esc> :q<CR>:q<CR>
-	
+
 	au BufWipeout <buffer> exe 'bw '. s:buf
 endfunction
 " }}}
@@ -164,3 +167,17 @@ function! functions#JavaInsertImport()
 	endtry
 endfunction
 " }}}
+" Add values of a regex to a list, g:regex_list {{{1
+function! functions#GetMatches(text, pattern)
+	let g:regex_list = []
+	let regex_length = 0
+
+	call substitute(a:text, a:pattern, '\=functions#AddToRegexList(submatch(0))', 'g')
+
+	return g:regex_list
+endfunction
+
+function! functions#AddToRegexList(value)
+	call add(g:regex_list, a:value)
+	return ''
+endfunction " }}}

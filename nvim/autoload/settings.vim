@@ -11,8 +11,10 @@ function! settings#Initialize()
 	set autoindent " Automatically indent new line to expected amount
 	set confirm " If a command requires an !, ask instead of returning an error
 	set list " Show hidden characters
+	set foldmethod=marker " Fold based on {{{ and }}}
 	set ve+=onemore " Allow the cursor to sit after the last character in the line
-	set completeopt=menuone,noinsert
+	set signcolumn=yes " Always show the sign column
+	set completeopt=menuone,noinsert " Show the autocomplete menu even if there is only 1 option
 	
 	" Ignore cases in search, unless the search term contains an uppercase
 	set ignorecase

@@ -63,12 +63,15 @@ Plug 'ap/vim-css-color'
 Plug 'terryma/vim-multiple-cursors'
 
 " File overview
-"Plug 'vim-scripts/taglist.vim'
+Plug 'vim-scripts/taglist.vim'
 
-" Fuzzy searching
-Plug 'akiyosi/gonvim-fuzzy'
+" Markdown preview
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
 call plug#end() " }}}
 call plugins#Initialize()
+
+" Initialize leader mappings
+call leader#Initialize()
 
 " Finish
 let already_loaded = 1

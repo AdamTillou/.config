@@ -8,6 +8,7 @@ function! plugins#Initialize()
 	" Miscellaneous plugins
 	call plugins#SetupWM()
 	call plugins#SetupMultipleCursors()
+	call plugins#SetupMarkdownPreview()
 endfunction 
 " Language support plugins
 function! plugins#SetupDeoplete() " {{{1
@@ -21,54 +22,26 @@ function! plugins#SetupUltiSnips() " {{{1
 	let g:UltiSnipsListSnippets = "<F2>"
 endfunction " }}}
 function! plugins#SetupALE() " {{{1
-	let g:ale_sign_column_always = 1
-	let g:ale_sign_error = ">"
-	let g:ale_sign_warning = "-"
+	let g:ale_linters = {'python':['flake8']}
 
-	autocmd BufNew py ALEEnableBuffer
+	let g:ale_sign_error = ' ✹'
+	"let g:ale_sign_error = ' ✗'
 
-	nnoremap <silent> <leader>e :ALENextWrap<CR>
+	hi def link ALEError Error
+	hi def link ALEErrorSign Error
+	hi def link ALEStyleError StyleError
+	hi def link ALEStyleErrorSign StyleError
 
-	" Change highlighting colors of errors and warnings
-	highlight def link ALEError Error 
-	highlight def link ALEWarning UtterNonsense
-	exec "highlight Todo ctermbg=" . g:colors.bg.cterm . " ctermfg=" . g:colors.bg.cterm
-
-	call g:HL("ALESignColumnWithErrors", g:colors.red, "", "none")
-	call g:HL("ALESignColumnWithoutErrors", g:colors.red, "", "none")
-
-
-	" Automatically update when changing lines in insert mode
-	let g:__curline__ = line(".")
-	autocmd InsertEnter * let g:__curline__ = line(".")
-	autocmd CursorMovedI * if g:__curline__ != line(".") | call feedkeys("i") | let g:__curline__ = line(".") | endif
+	hi def link ALEWarning Todo
+	hi def link ALEStyleWarning Todo
 endfunction " }}}
 function! plugins#SetupVimspector() " {{{1
 	let g:vimspector_install_gadgets = [ "debugpy", "vscode-cpp" ]
-	
+
 	let g:plugins#vimspector_templates = [ "python" ]
 	let g:plugins#vimspector_active = 0
-	
-	nmap <silent> <leader>VV :call plugins#VimspectorToggle()<CR>
-	nmap <silent> <leader>VC :call plugins#VimspectorConfigEdit()<CR>
-	
-	call plugins#VimspectorMappings()
 endfunction
 
-function! plugins#VimspectorMappings() " {{{2
-	nmap <leader>vl <Plug>VimspectorStepInto
-	nmap <leader>vh <Plug>VimspectorStepOut
-	nmap <leader>vj <Plug>VimspectorStepOver
-	
-	nmap <leader>vp <Plug>VimspectorPause
-	nmap <leader>vq <Plug>VimspectorContinue
-	nmap <leader>vt <Plug>VimspectorRunToCursor
-	nmap <leader>vr <Plug>VimspectorRestart
-
-	nmap <leader>vb <Plug>VimspectorToggleBreakpoint
-	nmap <leader>vf <Plug>VimspectorAddFunctionBreakpoint
-	nmap <leader>vc <Plug>VimspectorToggleConditionalBreakpoint
-endfunction " }}}
 function! plugins#VimspectorConfigEdit() " {{{2
 	let dir_splits = split(expand("%:p:h"), "/")
 	for i in range(1, len(dir_splits))
@@ -131,20 +104,18 @@ function! plugins#VimspectorToggle() " {{{2
 	if g:plugins#vimspector_active " When activating vimspector
 		nmap q <leader>v
 		call vimspector#Launch()
-		
+
 	else " When deactivating vimspector
 		nmap q <Nop>"
 		call vimspector#Reset()
 	endif
-endfunction
+endfunction " }}}
 " }}}
 
 " Miscellaneous plugins
 function! plugins#SetupWM() " {{{1
-	let &rtp .= "," . expand("~/Documents/VimPlugins/vim-wm")
-
-	"Enable windows
-	call windows#WindowManagerEnable()
+	"Enable window manager
+	call tiler#TabEnable()
 
 	" Set keybindings
 	nnoremap <silent> <nowait> <C-q> :WindowClose<CR>
@@ -170,23 +141,54 @@ function! plugins#SetupWM() " {{{1
 	nnoremap <silent> <nowait> <C-a> :SidebarToggleFocus<CR>
 
 	" Create sidebars
-	call add(g:wm#sidebar.bars, {"name":"filetree", "command":"call filetree#Initialize()"})
-	call add(g:wm#sidebar.bars, {"name":"taglist", "command":"Tlist"})
-	call add(g:wm#sidebar.bars, {"name":"mundo", "command":"MundoToggle"})
+	call tiler#sidebar#AddNew("filer", "call filer#Launch()")
+	call tiler#sidebar#AddNew("taglist", "Tlist")
+	call tiler#sidebar#AddNew("mundo", "MundoToggle")
 
 	" Custom sidebar keybindings
-	nnoremap <silent> <leader>1 :SidebarOpen filetree<CR>
-	nnoremap <silent> <leader>2 :SidebarOpen taglist<CR>
-	nnoremap <silent> <leader>3 :SidebarOpen mundo<CR>
+	nnoremap <silent> <A-1> :SidebarOpen filer<CR>
+	nnoremap <silent> <A-2> :SidebarOpen taglist<CR>
+	nnoremap <silent> <A-3> :SidebarOpen mundo<CR>
 endfunction " }}}
 function! plugins#SetupMultipleCursors() " {{{1
 	" Set custom mappings
 	let g:multi_cursor_use_default_mappings = 0
-	let g:multi_cursor_start_key = "<leader>ms"
-	let g:multi_cursor_select_all_word_key = "<leader>ma"
-	let g:multi_cursor_start_word_key = "<leader>mw"
-	let g:multi_cursor_select_all_key = "<leader>mA"
-	let g:multi_cursor_next_key = "<leader>mn"
-	let g:multi_cursor_prev_key = "<leader>mp"
+	let g:multi_cursor_start_key = "<Plug>multicursor_s"
+	let g:multi_cursor_select_all_word_key = "<Plug>multicursor_a"
+	let g:multi_cursor_start_word_key = "<Plug>multicursor_w"
+	let g:multi_cursor_select_all_key = "<Plug>multicursor_A"
+	let g:multi_cursor_next_key = "<Plug>multicursor_n"
+	let g:multi_cursor_prev_key = "<Plug>multicursor_p"
 	let g:multi_cursor_quit_key = "<Esc>"
 endfunction " }}}
+function! plugins#SetupMarkdownPreview() " {{{1
+	let g:mkdp_browser = 'surf'
+	let g:mkdp_page_title = '「${name}」'
+	let g:mkdp_filetypes = ['markdown']
+
+	let s:prev_line_nr = line('.')
+	let s:prev_line_content = getline(line('.'))
+	let g:ct = 0
+
+	" Show a fake cursor in the real cursor position
+	"autocmd CursorMoved *.md call plugins#MarkdownCursor()
+endfunction
+
+function! plugins#MarkdownCursor()
+	let g:ct += 1
+	call setline(s:prev_line_nr, s:prev_line_content)
+
+	let s:prev_line_nr = line('.')
+	let s:prev_line_content = getline(line('.'))
+
+	let cursor_char = '|'
+
+	if col('.') == 1
+		let new_line = cursor_char . getline('.')
+	else
+		let new_line = getline('.')[0:col('.') - 2] . cursor_char . getline('.')[col('.') - 1:-1]
+	endif
+
+	call setline(line('.'), new_line)
+endfunction
+" }}}
