@@ -20,6 +20,7 @@ function! settings#Initialize()
 	set ve+=onemore " Allow the cursor to sit after the last character in the line
 	set signcolumn=yes " Always show the sign column
 	set completeopt=menuone,noinsert " Show the autocomplete menu even if there is only 1 option
+	set hidden " Don't unload buffers when they are hidden
 	
 	" Set default foldmethod to indent, with folds always open
 	set foldmethod=indent

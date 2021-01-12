@@ -5,10 +5,6 @@
 " ==============================================================================
 
 function! functions#Initialize()
-	" Map H to open the help menu, but in a floating window
-	command! -nargs=1 H call functions#Help(0, "<args>")
-	command! -nargs=1 HG call functions#Help(1, "<args>")
-
 	" Create a command to show how many matches of a pattern are in a file
 	command -nargs=1 GetMatches let g:regex_list = functions#GetMatches(<args>) | echo string(len(g:regex_list)) 'matches found, check g:regex_list for full list'
 endfunction
@@ -18,6 +14,7 @@ function! functions#Getchar()
 	return strcharpart(strpart(getline('.'), col('.') - 1), 0, 1)
 endfun
 " }}}
+
 " Open a floating window in the center of the screen {{{1
 function! functions#FloatingWindow()
 	let width = min([&columns - 4, max([80, &columns - 20])])
@@ -47,87 +44,33 @@ function! functions#FloatingWindow()
 	au BufWipeout <buffer> exe 'bw '. s:buf
 endfunction
 " }}}
-" Open help menu in floating window {{{1
-function! functions#Help(grep, term)
-	let origional_name = @%
-	exec (a:grep ? "helpgrep " : "help ") . a:term
-	let help_line = line(".")
-	let help_path = expand("%:p")
+" Open a buffer that is the result of a command in a new window {{{1
+function! functions#OpenInFloatingWindow(command)
+	let origional_buffer = bufnr()
+	let origional_window = win_getid()
 
-	if @% == origional_name
+	exec a:command
+
+	let cmd_cursor = [line('.'), col('.')]
+	let cmd_buffer = bufnr()
+	let cmd_window = win_getid()
+
+	if bufnr() == origional_buffer
 		return 0
-	else
-		bdelete
 	endif
 
 	call functions#FloatingWindow()
-	exec "e " . help_path
-	call cursor(help_line, 0)
+	let floating_window = win_getid()
+	exec cmd_buffer . 'buffer'
+	call cursor(cmd_cursor[0], cmd_cursor[1])
+
+	call nvim_win_close(cmd_window, 1)
+
 	noremap <buffer> <Esc> :bd!<CR>:q<CR>
 	noremap <buffer> <C-q> :bd!<CR>:q<CR>
 endfunction
 " }}}
-" Show animation when switching tabs {{{1
-function! functions#TabScroll(dir)
-	let current_tab = GetDisplayedLines()
-	exec "tab" . a:dir
-	let new_tab = GetDisplayedLines()
-	let real_buffer = bufnr()
-	enew
-	setlocal nowrap
-	setlocal foldmethod=manual
-	let temp_buffer = bufnr()
 
-	for i in range(&lines - 1)
-		put =0
-	endfor
-	call cursor(1, 1)
-
-	let redraws = 80
-	let total_time = 200
-	for i in range(redraws)
-		for j in range(&lines)
-			let current_line = (len(current_tab) > j ? current_tab[j] : repeat(" ", &columns))
-			let new_line = (len(new_tab) > j ? new_tab[j] : repeat(" ", &columns))
-			let full_line = a:dir == "next" ? (current_line . new_line) : (new_line . current_line)
-			let truncate_chars = a:dir == "next" ? ((i * &columns) / redraws) : (&columns - ((i * &columns) / redraws))
-			let truncated_line = full_line[truncate_chars:-1]
-			call setline(j + 1, truncated_line)
-		endfor
-
-		redraw
-		exec "sleep " . (total_time / redraws) . "m"
-	endfor
-
-	silent exec real_buffer . "buffer"
-	silent exec temp_buffer . "bdelete!"
-endfunction
-" }}}
-" Get a list of lines of the current window {{{1
-function! functions#GetDisplayedLines()
-	let real_scrolloff = &scrolloff
-	let real_cursor = [line("."), col(".")]
-
-	set scrolloff=0
-	norm! H
-	let top_line = line(".")
-	call cursor(real_cursor)
-	norm! L
-	let bottom_line = line(".")
-	call cursor(real_cursor)
-	exec "set scrolloff=" . real_scrolloff
-
-	let line_list = []
-	for i in range(top_line, bottom_line)
-		let add_line = substitute(substitute(getline(i), "\n", "", "g"), "	", "  ", "g")
-		let add_line = add_line . repeat(" ", &columns - len(add_line))
-
-		call add(line_list, add_line)
-	endfor
-
-	return line_list
-endfunction
-" }}}
 " Java Imports {{{1
 function! functions#JavaInsertImport()
 	exe "normal mz"
@@ -173,6 +116,7 @@ function! functions#JavaInsertImport()
 	endtry
 endfunction
 " }}}
+
 " Add values of a regex to a list, g:regex_list {{{1
 function! functions#GetMatches(text, pattern)
 	let g:regex_list = []
@@ -186,4 +130,5 @@ endfunction
 function! functions#AddToRegexList(value)
 	call add(g:regex_list, a:value)
 	return ''
-endfunction " }}}
+endfunction
+" }}}

@@ -12,9 +12,6 @@ let g:init#config = expand('<sfile>:p:h')
 let &runtimepath = printf('%s/vimfiles,%s,%s/vimfiles/after', $VIM, $VIMRUNTIME, $VIM)
 let &runtimepath = printf('%s,%s,%s/after', g:init#config, &runtimepath, g:init#config)
 "
-"" Set leader key
-let mapleader="'"
-
 " Initialize basic settings
 call settings#Initialize()
 
@@ -70,6 +67,9 @@ Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': 
 
 " Detect indent width
 Plug 'ciaranm/detectindent'
+
+" Cheat.sh
+Plug 'dbeniamine/cheat.sh-vim'
 call plug#end() " }}}
 call plugins#Initialize()
 

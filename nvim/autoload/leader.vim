@@ -6,6 +6,9 @@
 
 function! leader#Initialize()
 	let g:leader#mappings = [
+				\ {'letter':'c', 'name':'Command', 'command':[
+				\ 		{'letter':'s', 'name':'Substitute', 'ncommand':':%s///g<Left><Left><Left>', 'vcommand':':s/\%V//g<Left><Left><Left>'},
+				\ ]},
 				\ {'letter':'s', 'name':'Setting', 'command':[
 				\ 	{'letter':'f', 'name':'Fold Method', 'command':[
 				\ 		{'letter':'i', 'name':'Indent', 'command':':setlocal foldmethod=indent<CR>'},
@@ -16,12 +19,14 @@ function! leader#Initialize()
 				\ 	{'letter':'h', 'name':'Show Hidden', 'command':':set list!<CR>'},
 				\ 	{'letter':'i', 'name':'Detect Indent', 'command':':DetectIndent<CR>'},
 				\ ]},
+				\ {'letter':'o', 'name':'Open', 'command':[
+				\ 		{'letter':'h', 'name':'Help menu', 'command':':call functions#OpenInFloatingWindow("exec \"help \" . input(\"Help Term: \")")<CR>'},
+				\ 		{'letter':'g', 'name':'Help grep', 'command':':call functions#OpenInFloatingWindow("exec \"helpgrep \" . input(\"Help Grep: \")")<CR>'},
+				\ 		{'letter':'c', 'name':'Cheatsheet', 'command':':let term = input("Search Cheatsheet: ") \| call functions#FloatingWindow() \| exec "silent CheatReplace " . term<CR>'},
+				\ ]},
 				\ {'letter':'i', 'name':'Insert', 'ncommand':[
 				\ 		{'letter':'l', 'name':'Line: │', 'command':'i│<Esc>l'},
 				\ 		{'letter':'h', 'name':'Hashtag Heading: │', 'command':'i#<Esc>yl79pyypO# <Esc>yl77pi##<Esc>03lR'},
-				\ ]},
-				\ {'letter':'c', 'name':'Command', 'command':[
-				\ 		{'letter':'s', 'name':'Substitute', 'ncommand':':%s///g<Left><Left><Left>', 'vcommand':':s/\%V//g<Left><Left><Left>'},
 				\ ]},
 				\ {'letter':'m', 'name':'Multi Cursor', 'command':[
 				\ 		{'letter':'s', 'name':'Start', 'command':'<Plug>multicursor_s'},
@@ -45,11 +50,10 @@ function! leader#Initialize()
 				\ 		{'letter':'f', 'name':'Function Breakpoint', 'command':'<Plug>VimspectorAddFunctionBreakpoint'},
 				\ 		{'letter':'c', 'name':'Conditional Breakpoint', 'command':'<Plug>VimspectorToggleConditionalBreakpoint'},
 				\ ]},
-				\ {'letter':'f', 'name':'Format', 'command':'\mzgg=G`z'},
 				\ ]
 
-	nnoremap <silent> <nowait> <leader> :call leader#SelectMenu('normal', 'Leader menu', g:leader#mappings)<CR>
-	vnoremap <silent> <nowait> <leader> :<BS><BS><BS><BS><BS>call leader#SelectMenu('visual', 'Leader menu', g:leader#mappings)<CR>
+	nnoremap <silent> <nowait> ' :call leader#SelectMenu('normal', 'Leader menu', g:leader#mappings)<CR>
+	vnoremap <silent> <nowait> ' :<BS><BS><BS><BS><BS>call leader#SelectMenu('visual', 'Leader menu', g:leader#mappings)<CR>
 endfunction
 
 function! leader#SelectMenu(mode, title, options) " {{{1
@@ -99,10 +103,11 @@ function! leader#SelectMenu(mode, title, options) " {{{1
 	" a list
 	if type(command) == type('')
 		if command[0] == '\'
-			exec a:mode[0] . 'noremap \ ' . command[1:-1]
+			exec a:mode[0] . 'noremap <nowait> \ ' . command[1:-1]
 		else
-			exec a:mode[0] . 'map \ ' . command
+			exec a:mode[0] . 'map <nowait> \ ' . command
 		endif
+		let g:cmd = command
 
 		if a:mode == 'visual'
 			norm! gv
