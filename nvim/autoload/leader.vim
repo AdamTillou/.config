@@ -1,3 +1,9 @@
+" ==============================================================================
+" Filename:     leader.vim
+" Description:  A custom menu full of actions for the leader key
+" Author:       Adam Tillou
+" ==============================================================================
+
 function! leader#Initialize()
 	let g:leader#mappings = [
 				\ {'letter':'s', 'name':'Setting', 'command':[

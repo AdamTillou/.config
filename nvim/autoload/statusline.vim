@@ -1,3 +1,9 @@
+" ==============================================================================
+" Filename:     statusline.vim
+" Description:  Add a custom, toggleable, statusline
+" Author:       Adam Tillou
+" ==============================================================================
+
 function! statusline#Initialize()
 	" Set the left and right separator
 	let s:left_separator = "❱"

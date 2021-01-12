@@ -1,3 +1,9 @@
+" ==============================================================================
+" Filename:     plugins.vim
+" Description:  Configuration for various plugins
+" Author:       Adam Tillou
+" ==============================================================================
+
 function! plugins#Initialize()
 	" Language support plugins
 	call plugins#SetupDeoplete()

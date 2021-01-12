@@ -1,3 +1,9 @@
+" ==============================================================================
+" Filename:     functions.vim
+" Description:  Miscellaneous useful functions
+" Author:       Adam Tillou
+" ==============================================================================
+
 function! functions#Initialize()
 	" Map H to open the help menu, but in a floating window
 	command! -nargs=1 H call functions#Help(0, "<args>")

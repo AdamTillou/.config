@@ -1,3 +1,9 @@
+" ==============================================================================
+" Filename:     colors.vim
+" Description:  Syntax colors and styles
+" Author:       Adam Tillou
+" ==============================================================================
+
 function! colors#Initialize()
 	" Prepare for setting up colors
 	highlight clear

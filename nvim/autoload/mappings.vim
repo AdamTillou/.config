@@ -1,3 +1,9 @@
+" ==============================================================================
+" Filename:     mappings.vim
+" Description:  Custom key mappings for all modes
+" Author:       Adam Tillou
+" ==============================================================================
+
 function! mappings#Initialize()
 	" Basic mappings
 	" Movement mappings {{{1

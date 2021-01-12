@@ -1,3 +1,9 @@
+" ==============================================================================
+" Filename:     settings.vim
+" Description:  Basic vim preferences
+" Author:       Adam Tillou
+" ==============================================================================
+
 function! settings#Initialize()
 	" Set basic preferences
 	set number " Show line numbers
