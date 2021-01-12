@@ -8,6 +8,7 @@ function! leader#Initialize()
 				\ 		{'letter':'s', 'name':'Syntax', 'command':':setlocal foldmethod=syntax<CR>'},
 				\ 	]},
 				\ 	{'letter':'h', 'name':'Show Hidden', 'command':':set list!<CR>'},
+				\ 	{'letter':'i', 'name':'Detect Indent', 'command':':DetectIndent<CR>'},
 				\ ]},
 				\ {'letter':'i', 'name':'Insert', 'ncommand':[
 				\ 		{'letter':'l', 'name':'Line: │', 'command':'i│<Esc>l'},
@@ -38,7 +39,7 @@ function! leader#Initialize()
 				\ 		{'letter':'f', 'name':'Function Breakpoint', 'command':'<Plug>VimspectorAddFunctionBreakpoint'},
 				\ 		{'letter':'c', 'name':'Conditional Breakpoint', 'command':'<Plug>VimspectorToggleConditionalBreakpoint'},
 				\ ]},
-				\ {'letter':'f', 'name':'Format', 'command':'mzgg=G`z'},
+				\ {'letter':'f', 'name':'Format', 'command':'\mzgg=G`z'},
 				\ ]
 
 	nnoremap <silent> <nowait> <leader> :call leader#SelectMenu('normal', 'Leader menu', g:leader#mappings)<CR>
@@ -91,7 +92,11 @@ function! leader#SelectMenu(mode, title, options) " {{{1
 	" Execute the command if it is a string, or call the function again if it is
 	" a list
 	if type(command) == type('')
-		exec a:mode[0] . 'map \ ' . command
+		if command[0] == '\'
+			exec a:mode[0] . 'noremap \ ' . command[1:-1]
+		else
+			exec a:mode[0] . 'map \ ' . command
+		endif
 
 		if a:mode == 'visual'
 			norm! gv

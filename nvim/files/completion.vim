@@ -1,29 +1,37 @@
-" Code to add to .../autoload/deoplete/mappings.vim in the function {{{1
-" deoplete#mappings#_complete() before the complete() command at the end
+" This file is an unfinished plugin for showing the completion info in a popup
+" window beside the actual completion in deoplete. I abandoned it because I was
+" unable to figure out how to return to any item in the completion menu other
+" than the first. Perhaps my future self or someone more knowledgeable in the
+" ways of vim can get it to work.
 
-"	let g:var = string(g:deoplete#_context.candidates)
-"	let g:first_buffer = bufnr('$')
-"	let before_winid = win_getid()
-"
-"	for i in range(1, bufnr('$'))
-"		if bufname(i)[0:15] == "__completeinfo__"
-"			silent! exec i . "bdelete!"
-"		endif
-"	endfor
-"
-"	let index = 0
-"	for q in g:deoplete#_context.candidates
-"		new | silent! exec "file! __completeinfo__" . index
-"
-"		call setline(1, "   " . q.word)
-"		call setline(2, "   " . q.menu)
-"
-"		write! | close!
-"		let index += 1
-"	endfor
-"	call win_gotoid(before_winid)
+" Deoplete code {{{1
+" Add to .../deoplete/autoload/deoplete/mappings.vim in the function
+" deoplete#mappings#_complete() before the final complete() command
+
+let g:var = string(g:deoplete#_context.candidates)
+let g:first_buffer = bufnr('$')
+let before_winid = win_getid()
+
+for i in range(1, bufnr('$'))
+	if bufname(i)[0:15] == "__completeinfo__"
+		silent! exec i . "bdelete!"
+	endif
+endfor
+
+let index = 0
+for q in g:deoplete#_context.candidates
+	new | silent! exec "file! __completeinfo__" . index
+
+	call setline(1, "   " . q.word)
+	call setline(2, "   " . q.menu)
+
+	write! | close!
+	let index += 1
+endfor
+call win_gotoid(before_winid)
 
 " }}}
+
 function! completion#Initialize() " {{{1
 	let g:trow = screenrow()
 	let g:trowh = [g:trow]

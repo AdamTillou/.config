@@ -11,11 +11,10 @@ function! settings#Initialize()
 	set autoindent " Automatically indent new line to expected amount
 	set confirm " If a command requires an !, ask instead of returning an error
 	set list " Show hidden characters
-	set foldmethod=marker " Fold based on {{{ and }}}
 	set ve+=onemore " Allow the cursor to sit after the last character in the line
 	set signcolumn=yes " Always show the sign column
 	set completeopt=menuone,noinsert " Show the autocomplete menu even if there is only 1 option
-	
+
 	" Ignore cases in search, unless the search term contains an uppercase
 	set ignorecase
 	set smartcase
@@ -48,4 +47,20 @@ function! settings#Initialize()
 	if exists("g:neovide") && g:neovide
 		let g:neovide_cursor_animation_length = 0
 	endif
+	
+	" Reload stubborn settings when entering a python file
+	autocmd BufWinEnter *.py setlocal noexpandtab | setlocal shiftwidth=2 | setlocal tabstop=2
+
+	" Foldmethods for different files
+	" Fold on indent, but start unfolded by default (for programming)
+	set foldmethod=indent
+	set foldlevel=100
+	" Fold on {{{ and }}}, and start folded (for vimscripts)
+	for q in ['vim']
+		silent exec 'autocmd BufRead *.' . q . ' setlocal foldmethod=marker | setlocal foldlevel=0'
+	endfor
+	" Fold on indent, and start fully folded (for notes)
+	for q in ['note']
+		silent exec 'autocmd BufRead *.' . q . ' setlocal foldmethod=indent | setlocal foldlevel=0'
+	endfor
 endfunction

@@ -67,6 +67,9 @@ Plug 'vim-scripts/taglist.vim'
 
 " Markdown preview
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+
+" Detect indent width
+Plug 'ciaranm/detectindent'
 call plug#end() " }}}
 call plugins#Initialize()
 
