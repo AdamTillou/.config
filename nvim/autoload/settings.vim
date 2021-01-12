@@ -14,6 +14,10 @@ function! settings#Initialize()
 	set ve+=onemore " Allow the cursor to sit after the last character in the line
 	set signcolumn=yes " Always show the sign column
 	set completeopt=menuone,noinsert " Show the autocomplete menu even if there is only 1 option
+	
+	" Set default foldmethod to indent, with folds always open
+	set foldmethod=indent
+	set foldlevel=100
 
 	" Ignore cases in search, unless the search term contains an uppercase
 	set ignorecase
@@ -50,17 +54,7 @@ function! settings#Initialize()
 	
 	" Reload stubborn settings when entering a python file
 	autocmd BufWinEnter *.py setlocal noexpandtab | setlocal shiftwidth=2 | setlocal tabstop=2
-
-	" Foldmethods for different files
-	" Fold on indent, but start unfolded by default (for programming)
-	set foldmethod=indent
-	set foldlevel=100
-	" Fold on {{{ and }}}, and start folded (for vimscripts)
-	for q in ['vim']
-		silent exec 'autocmd BufRead *.' . q . ' setlocal foldmethod=marker | setlocal foldlevel=0'
-	endfor
-	" Fold on indent, and start fully folded (for notes)
-	for q in ['note']
-		silent exec 'autocmd BufRead *.' . q . ' setlocal foldmethod=indent | setlocal foldlevel=0'
-	endfor
+	
+	" Load syntax file for notes
+	autocmd BufWinEnter *.note exec 'source ' . g:init#config . '/syntax/note.vim'
 endfunction
