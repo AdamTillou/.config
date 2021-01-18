@@ -20,7 +20,11 @@ function! settings#Initialize()
 	set ve+=onemore " Allow the cursor to sit after the last character in the line
 	set signcolumn=yes " Always show the sign column
 	set completeopt=menuone,noinsert " Show the autocomplete menu even if there is only 1 option
-	set hidden " Don't unload buffers when they are hidden
+	set nohidden " Unload empty buffers when they are hidden
+	
+	" Set gui specific options
+	set guifont=FiraCode:h11 " Set the default font for gui mode
+	set linespace=3 " Set the spacing between each line
 	
 	" Set default foldmethod to indent, with folds always open
 	set foldmethod=indent
@@ -52,7 +56,8 @@ function! settings#Initialize()
 
 	" Set special characters
 	set fillchars=vert:\│
-	set listchars=eol:↲,tab:│\ 
+	
+	set listchars=eol:↲,tab:\ \ 
 
 	" Set gui options
 	if exists("g:neovide") && g:neovide

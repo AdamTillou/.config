@@ -46,6 +46,14 @@ function! plugins#SetupVimspector() " {{{1
 
 	let g:plugins#vimspector_templates = [ "python" ]
 	let g:plugins#vimspector_active = 0
+	
+	" Get the vimspector keyboard shortcuts from the leader menu
+	for q in g:leader#mappings
+		if q.name == "Vimspector"
+			let g:plugins#vimspector_keys = q.command
+			break
+		endif
+	endfor
 endfunction
 
 function! plugins#VimspectorConfigEdit() " {{{2
@@ -108,11 +116,13 @@ function! plugins#VimspectorToggle() " {{{2
 	let g:plugins#vimspector_active = !g:plugins#vimspector_active
 
 	if g:plugins#vimspector_active " When activating vimspector
-		nmap q <leader>v
+		nnoremap q :call leader#SelectMenu("normal", "Vimspector menu", g:plugins#vimspector_keys)<CR>
+		nmap Q <Plug>VimspectorStepInto
 		call vimspector#Launch()
 
 	else " When deactivating vimspector
 		nmap q <Nop>"
+		nmap Q <Nop>"
 		call vimspector#Reset()
 	endif
 endfunction " }}}
@@ -120,8 +130,7 @@ endfunction " }}}
 
 " Miscellaneous plugins
 function! plugins#SetupWM() " {{{1
-	"Enable window manager
-	call tiler#TabEnable()
+	call tiler#GlobalEnable()
 
 	" Set keybindings
 	nnoremap <silent> <nowait> <C-q> :WindowClose<CR>
@@ -145,6 +154,11 @@ function! plugins#SetupWM() " {{{1
 
 	nnoremap <silent> <nowait> <C-w>s :SidebarToggleOpen<CR>
 	nnoremap <silent> <nowait> <C-a> :SidebarToggleFocus<CR>
+	
+	" Custom colors
+	call tiler#colors#SetSidebarColor(g:colors.sidebar)
+	call tiler#colors#SetWindowColor(g:colors.bg)
+	"call tiler#colors#SetCurrentColor(g:colors.bg)
 
 	" Create sidebars
 	call tiler#sidebar#AddNew("filer", "call filer#Launch()")
@@ -175,9 +189,6 @@ function! plugins#SetupMarkdownPreview() " {{{1
 	let s:prev_line_nr = line('.')
 	let s:prev_line_content = getline(line('.'))
 	let g:ct = 0
-
-	" Show a fake cursor in the real cursor position
-	"autocmd CursorMoved *.md call plugins#MarkdownCursor()
 endfunction
 
 function! plugins#MarkdownCursor()

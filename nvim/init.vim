@@ -27,6 +27,9 @@ call statusline#Initialize()
 " Initialize functions
 call functions#Initialize()
 
+" Initialize leader mappings
+call leader#Initialize()
+
 " Initialize plugins
 " Add plugins to runtime path " {{{1
 call plug#begin(g:init#config . "/plugins")
@@ -36,7 +39,6 @@ Plug 'tbodt/deoplete-tabnine', { 'do': './install.sh' }
 
 " Snippets
 Plug 'sirver/UltiSnips'
-Plug 'honza/vim-snippets'
 
 " Show syntax errors
 Plug 'dense-analysis/ale'
@@ -72,9 +74,6 @@ Plug 'ciaranm/detectindent'
 Plug 'dbeniamine/cheat.sh-vim'
 call plug#end() " }}}
 call plugins#Initialize()
-
-" Initialize leader mappings
-call leader#Initialize()
 
 " Finish
 let already_loaded = 1

@@ -35,8 +35,8 @@ function! s:ColorVariables() " {{{1
 	let g:colors.blue = {"gui": "#5FAFD7", "cterm": "074"}
 	let g:colors.purple = {"gui": "#AF87D7", "cterm": "140"}
 
-	let g:colors.sidebar = {"gui": "#181D22", "cterm": "NONE"}
-	let g:colors.bg = {"gui": "#2F2F2F", "cterm": "NONE"}
+	let g:colors.sidebar = {"gui": "#222630", "cterm": "0"}
+	let g:colors.bg = {"gui": "#293039", "cterm": "NONE"}
 	let g:colors.active_bg = g:colors.bg
 	let g:colors.popup = {"gui": "#30343C", "cterm": "239"}
 endfunction " }}}
@@ -61,18 +61,17 @@ function! s:ColorGroups() " {{{1
 	call g:HL("SidebarFold", g:colors.grey2, g:colors.sidebar, "")
 	call g:HL("SidebarSignColumn", "", g:colors.sidebar, "")
 
-	call g:HL("Regular", g:colors.fg, g:colors.bg, "")
 	call g:HL("Normal", g:colors.fg, g:colors.bg, "")
 	call g:HL("NormalFloat", g:colors.fg, g:colors.bg, "")
 	call g:HL("NonText", g:colors.grey2, "", "")
-	call g:HL("EndOfBuffer", g:colors.bg, "", "")
-	call g:HL("MsgArea", "", g:colors.sidebar, "")
+	call g:HL("EndOfBuffer", g:colors.grey2, "", "")
+	call g:HL("MsgArea", "", "", "")
 
 	call g:HL("Cursor", "", g:colors.grey2, "")
 	call g:HL("CursorColumn", "", "", "")
 	call g:HL("CursorLine", "", "", "bold")
 	call g:HL("LineNr", g:colors.grey2, "", "")
-	call g:HL("CursorLineNr", g:colors.white, g:colors.popup, "bold")
+	call g:HL("CursorLineNr", g:colors.white, "", "bold")
 
 	call g:HL("DiffAdd", g:colors.white, "", "")
 	call g:HL("DiffChange", g:colors.white, "", "")
@@ -80,9 +79,9 @@ function! s:ColorGroups() " {{{1
 	call g:HL("DiffText", g:colors.blue, "", "")
 	call g:HL("ModeMsg", g:colors.yellow, "", "")
 	call g:HL("MoreMsg", g:colors.yellow, "", "")
-	call g:HL("WarningMsg", g:colors.yellow, g:colors.bg, "italic")
+	call g:HL("WarningMsg", g:colors.yellow, "", "italic")
 	call g:HL("Question", g:colors.purple, "", "")
-	call g:HL("MatchParen", g:colors.purple, g:colors.bg, "bold")
+	call g:HL("MatchParen", g:colors.fg, g:colors.purple, "bold")
 
 	call g:HL("Pmenu", g:colors.white, g:colors.popup, "")
 	call g:HL("PmenuSel", g:colors.black, g:colors.blue, "bold")
@@ -94,10 +93,10 @@ function! s:ColorGroups() " {{{1
 	call g:HL("SpellLocal", g:colors.yellow, "", "")
 	call g:HL("SpellRare", g:colors.yellow, "", "")
 
-	call g:HL("StatusLine", g:colors.fg, "", "bold")
-	call g:HL("StatusLineNC", g:colors.grey2, "", "underline")
-	call g:HL("TabLine", g:colors.fg, g:colors.bg, "none")
-	call g:HL("TabLineSel", g:colors.white, g:colors.bg, "bold")
+	call g:HL("StatusLine", g:colors.fg, g:colors.bg, "bold")
+	call g:HL("StatusLineNC", g:colors.grey2, g:colors.bg, "underline")
+	call g:HL("TabLine", g:colors.fg, "", "none")
+	call g:HL("TabLineSel", g:colors.white, "", "bold")
 	call g:HL("TabLineFill", "", "", "none")
 
 	call g:HL("Visual", "", g:colors.popup, "")
@@ -153,11 +152,13 @@ function! s:ColorGroups() " {{{1
 	call g:HL("Debug", g:colors.yellow, "", "")
 	call g:HL("Underlined", g:colors.yellow, "", "")
 	call g:HL("Ignore", g:colors.yellow, "", "")
-	call g:HL("Todo", g:colors.yellow, g:colors.bg, "")
+	call g:HL("Todo", g:colors.yellow, "", "")
 
-	call g:HL("Error", {"gui":"#FF0000", "cterm":196}, g:colors.bg, "italic")
-	call g:HL("StyleError", {"gui":"#FF5F00", "cterm":202}, g:colors.bg, "italic")
+	call g:HL("Error", {"gui":"#FF0000", "cterm":196}, "", "italic")
+	call g:HL("StyleError", {"gui":"#FF5F00", "cterm":202}, "", "italic")
 endfunction " }}}
 function! colors#SetSidebarHl() " {{{1
-	set winhl=Normal:Sidebar,EndOfBuffer:SidebarEOB,Folded:SidebarFold,SignColumn:SidebarSignColumn
+	call g:HL("Normal", g:colors.fg, g:colors.sidebar, "")
+	call g:HL("MsgArea", g:colors.fg, g:colors.sidebar, "")
+	call g:HL("Folded", g:colors.fg, g:colors.sidebar, "")
 endfunction " }}}

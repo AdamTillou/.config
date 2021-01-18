@@ -12,35 +12,16 @@ function! statusline#Initialize()
 	call s:PrepareModules()
 	call s:PrepareColors()
 
-	command SimpleStatusline call s:SetStatuslineType(0)
-	command ComplexStatusline call s:SetStatuslineType(1)
-	command ToggleStatusline call s:SetStatuslineType(-1)
-	nnoremap <leader>ss :ToggleStatusline<CR>
+	command! EmptyStatusline call s:SetStatuslineType(0)
+	command! NameStatusline call s:SetStatuslineType(1)
+	command! SimpleStatusline call s:SetStatuslineType(2)
+	command! ComplexStatusline call s:SetStatuslineType(3)
+	command! ToggleStatusline call s:SetStatuslineType(-1)
 
-	let g:sttype = 0
+	let g:sttype = 1
 	call s:SetStatuslineType(g:sttype)
 endfunction
 
-function! s:SetStatuslineType(arg) " {{{1
-	if a:arg == 0
-		let g:sttype = 0
-		hi StatusLine cterm=strikethrough gui=strikethrough
-		hi StatusLineNC cterm=strikethrough gui=strikethrough
-		exec "set statusline=\\ "
-		set laststatus=0
-
-	elseif a:arg == 1
-		let g:sttype = 1
-		hi StatusLine cterm=bold gui=bold
-		hi StatusLineNC cterm=underline gui=underline
-		exec "set statusline=" . statusline#ComplexStatusline()
-		set laststatus=2
-
-	else
-		let g:sttype = !g:sttype
-		call s:SetStatuslineType(g:sttype)
-	endif
-endfunction " }}}
 function! s:PrepareModules() " {{{1
 	" Set a template for statusline modules
 	let s:left_modules = [
@@ -70,6 +51,41 @@ function! s:PrepareColors() " {{{1
 	call g:HL("StatuslineWarning", g:colors.yellow, "", "bold")
 endfunction " }}}
 
+function! s:SetStatuslineType(arg) " {{{1
+	if a:arg == 0
+		let g:sttype = 0
+		hi StatusLine cterm=none gui=none
+		hi StatusLineNC cterm=none gui=none
+		set laststatus=0
+		set statusline=\ 
+		
+	elseif a:arg == 1
+		let g:sttype = 1
+		hi StatusLine cterm=bold gui=bold
+		hi StatusLineNC cterm=none gui=none
+		set laststatus=1
+		set statusline=\ %-0{expand\(\"%:t\"\)}\ 
+		
+	elseif a:arg == 2
+		let g:sttype = 2
+		hi StatusLine cterm=strikethrough gui=strikethrough
+		hi StatusLineNC cterm=strikethrough gui=strikethrough
+		set laststatus=0
+		set statusline=\ 
+
+	elseif a:arg == 3
+		let g:sttype = 3
+		hi StatusLine cterm=bold gui=bold
+		hi StatusLineNC cterm=underline gui=none
+		set laststatus=2
+		exec "set statusline=" . statusline#ComplexStatusline()
+
+	else
+		let g:sttype = (g:sttype + 1) % 4
+		call s:SetStatuslineType(g:sttype)
+	endif
+endfunction " }}}
+
 function! statusline#ComplexStatusline() " {{{1
 	" Create starting module
 	let status_string = "%{statusline#Start()}"
@@ -87,7 +103,7 @@ function! statusline#ComplexStatusline() " {{{1
 	for q in s:right_modules
 		let status_string .= s:AddModule(q)
 	endfor
-	
+
 	return status_string
 endfunction " }}}
 function! s:AddModule(module) " {{{1
@@ -98,7 +114,7 @@ function! s:AddModule(module) " {{{1
 	let string .= "%#" . a:module.color . "#"
 	let string .= "%{statusline#Return('\\ ',1)}"
 	let string .= "%-0{statusline#Return(" . a:module.value . ",1)}"
-	
+
 	return string
 endfunction " }}}
 

@@ -15,6 +15,20 @@ function! functions#Getchar()
 endfun
 " }}}
 
+" Enable settings for gui mode {{{1
+function! functions#GuiMode()
+	NameStatusline
+	call tiler#colors#Enable()
+
+	let current_window = win_getid()
+	for i in range(1, winnr("$"))
+		call win_gotoid(win_getid(i))
+		set fillchars=vert:\ 
+	endfor
+	call win_gotoid(current_window)
+endfun
+" }}}
+
 " Open a floating window in the center of the screen {{{1
 function! functions#FloatingWindow()
 	let width = min([&columns - 4, max([80, &columns - 20])])
@@ -114,6 +128,22 @@ function! functions#JavaInsertImport()
 		endif
 		exe "normal! `z"
 	endtry
+endfunction
+" }}}
+
+" Add values of a regex to a list, g:regex_list {{{1
+function! functions#GetMatches(text, pattern)
+	let g:regex_list = []
+	let regex_length = 0
+
+	call substitute(a:text, a:pattern, '\=functions#AddToRegexList(submatch(0))', 'g')
+
+	return g:regex_list
+endfunction
+
+function! functions#AddToRegexList(value)
+	call add(g:regex_list, a:value)
+	return ''
 endfunction
 " }}}
 

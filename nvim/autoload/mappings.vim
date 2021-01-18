@@ -47,11 +47,11 @@ function! mappings#Initialize()
 
 	noremap Y yy
 	nnoremap yy mz^"0y$`z
-	
+
 	" Map g+key to add to the register
 	nnoremap gaY "zyy:let @0 .= "\n" . @z<CR>:let @" = @0<CR>
 	vnoremap gay "zy:let @0 .= "\n" . @z<CR>:let @" = @0<CR>
-	
+
 	nnoremap gaS "zdd:let @0 .= "\n" . @z<CR>:let @" = @0<CR>
 	vnoremap gas "zd:let @0 .= "\n" . @z<CR>:let @" = @0<CR>
 
@@ -73,18 +73,18 @@ function! mappings#Initialize()
 	onoremap z 0
 	onoremap x $
 	" }}}
-" Buffer related mappings 	{{{1
-noremap ( :bp!<CR>
-noremap ) :bn!<CR>
+	" Buffer related mappings 	{{{1
+	noremap ( :bp!<CR>
+	noremap ) :bn!<CR>
 
-noremap <C-h> <C-w>h
-noremap <C-j> <C-w>j
-noremap <C-k> <C-w>k
-noremap <C-l> <C-w>l
-" }}}
+	noremap <C-h> <C-w>h
+	noremap <C-j> <C-w>j
+	noremap <C-k> <C-w>k
+	noremap <C-l> <C-w>l
+	" }}}
 	" File related mappings {{{1
 	" Map Ctrl+S to save
-	noremap <silent> <C-s> <Esc>:w<CR>
+	noremap <silent> <C-s> <Esc>:silent w<CR>
 
 	" Map Ctrl+X to exit
 	noremap <silent> <C-x> <Esc>:wa<CR>:qa!<CR>
@@ -94,7 +94,8 @@ noremap <C-l> <C-w>l
 	" }}}
 	" Useful mappings {{{1
 	" Map gq to macros and q to esc
-	noremap q <Esc>
+	noremap q <Nop>
+	noremap Q <Nop>
 	noremap gq q
 
 	" Make F1 not bring up help menu
@@ -123,6 +124,9 @@ noremap <C-l> <C-w>l
 	vnoremap <nowait> i I
 	vnoremap <nowait> a A
 
+	" Map gf to format the file
+	noremap gf mzgg=G`z
+
 	" Map -/=/_/+ to increment/decrement numbers in visual mode
 	vnoremap - <Esc><C-x>gv
 	vnoremap = <Esc><C-a>gv
@@ -130,11 +134,11 @@ noremap <C-l> <C-w>l
 	vnoremap + g<C-a>gv
 	vnoremap g- I0<Esc>gvg<C-x>gv
 	vnoremap g= I0<Esc>gvg<C-a>gv
-	
+
 	" Map g= / g- to increment/decrement a number in normal mode
 	nnoremap g- <C-x>
 	nnoremap g= <C-a>
-	
+
 	" Easier indenting
 	nnoremap > mz>>`zl
 	nnoremap <expr> < indent(line(".")) > 0 ? "mz<<`zh" : ""
@@ -146,7 +150,7 @@ noremap <C-l> <C-w>l
 
 	" Map M to merge two lines since J is already mapped
 	nnoremap M J
-	
+
 	" Map gm to go to the middle of the line
 	nnoremap <silent> gm :call cursor(line("."), col("$") / 2)<CR>
 
@@ -177,33 +181,15 @@ noremap <C-l> <C-w>l
 	imap <expr> <Tab> pumvisible() ? "<C-y>" : "<Tab>"
 	" }}}
 	" Text modification mappings {{{1
-	imap <A-d> <Esc>ddi
-	imap <A-s> <Esc>dsi
-	imap <A-v> <Esc>dvi
-	imap <A-V> <Esc>dVi
-	imap <A-y> <Esc>yyi
-	imap <A-c> <Esc>yypi
-	imap <A-C> <Esc>yyPi
-	imap <A-p> <Esc>pa
-	imap <A-P> <Esc>Pa
-	imap <A-u> <Esc>ui
-	imap <A-U> <Esc>Ui
+	inoremap <A-p> <Esc>pa
+	inoremap <A-P> <Esc>Pa
+	inoremap <A-> <Esc>o
 	imap <A-x> <Esc>xi
 	imap <A-X> <Esc>Xi
 	imap <A-z> <Esc>zi
 	imap <A-Z> <Esc>Zi
 	imap <BS> <A-z>
-	imap <A-> <Esc><CR>i
-	inoremap <A-]> <Esc>mz>>`za
-	inoremap <A-[> <Esc>mz<<`za
-	" }}}
-	" Adding folds {{{1
-	imap <A-f> <Esc>A{<Right>{{<CR><CR>" }<Right>}}<Up>
-	imap <A-f>0 <Esc>A{<Right>{{<CR><CR>" }<Right>}}<Up>
-	imap <A-f>1 <Esc>A{<Right>{{1<CR><CR>" }<Right>}}<Up>
-	imap <A-f>2 <Esc>A{<Right>{{2<CR><CR>" }<Right>}}<Up>
-	imap <A-f>3 <Esc>A{<Right>{{3<CR><CR>" }<Right>}}<Up>
-	imap <A-f>4 <Esc>A{<Right>{{4<CR><CR>" }<Right>}}<Up>
-	imap <A-f>5 <Esc>A{<Right>{{5<CR><CR>" }<Right>}}<Up>
+	imap <A-a> <Esc><i
+	imap <A-d> <Esc>>i
 	" }}}
 endfunction
