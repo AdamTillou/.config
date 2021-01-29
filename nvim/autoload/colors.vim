@@ -12,17 +12,29 @@ function! colors#Initialize()
 	set t_Co=256
 	filetype plugin on
 	set background=dark
-
-	call s:ColorVariables()
-	call s:HighlightFunction()
-	call s:ColorGroups()
-
-	nnoremap <leader>sc :call colors#SetSidebarHl()<CR>
+	
+	call colors#ColorVariables()
+	call colors#ColorGroups()
 endfunction
+" }}}
 
-function! s:ColorVariables() " {{{1
+" }}}
+
+function! g:HL(group, fg, bg, attr) " {{{1
+	if type(a:fg) == type({})
+		exec "hi " . a:group . " guifg=" . a:fg.gui . " ctermfg=" . a:fg.cterm
+	endif
+
+	if type(a:bg) == type({})
+		exec "hi " . a:group . " guibg=" . a:bg.gui . " ctermbg=" . a:bg.cterm
+	endif
+
+	let attr = (a:attr == "") ? "NONE" : a:attr
+	exec "hi " . a:group . " gui=" . attr . " cterm=" . attr
+endfunction " }}}
+function! colors#ColorVariables() " {{{1
 	let g:colors = {}
-	let g:colors.fg = {"gui": "#D0D0D0", "cterm": "188"}
+	let g:colors.fg = {"gui": "#D0D0D0", "cterm": "NONE"}
 	let g:colors.white = {"gui": "#D3D7DB", "cterm": "188"}
 	let g:colors.grey1 = {"gui": "#A4A8AC", "cterm": "248"}
 	let g:colors.grey2 = {"gui": "#7C8084", "cterm": "244"}
@@ -35,26 +47,12 @@ function! s:ColorVariables() " {{{1
 	let g:colors.blue = {"gui": "#5FAFD7", "cterm": "074"}
 	let g:colors.purple = {"gui": "#AF87D7", "cterm": "140"}
 
-	let g:colors.sidebar = {"gui": "#222630", "cterm": "0"}
-	let g:colors.bg = {"gui": "#293039", "cterm": "NONE"}
+	let g:colors.sidebar = {"gui": "#222630", "cterm": "NONE"}
+	let g:colors.bg = {"gui": "#293039", "cterm": "8"}
 	let g:colors.active_bg = g:colors.bg
 	let g:colors.popup = {"gui": "#30343C", "cterm": "239"}
 endfunction " }}}
-function! s:HighlightFunction() " {{{1
-	function! g:HL(group, fg, bg, attr)
-		if type(a:fg) == type({})
-			exec "hi " . a:group . " guifg=" . a:fg.gui . " ctermfg=" . a:fg.cterm
-		endif
-
-		if type(a:bg) == type({})
-			exec "hi " . a:group . " guibg=" . a:bg.gui . " ctermbg=" . a:bg.cterm
-		endif
-
-		let attr = (a:attr == "") ? "NONE" : a:attr
-		exec "hi " . a:group . " gui=" . attr . " cterm=" . attr
-	endfun
-endfunction " }}}
-function! s:ColorGroups() " {{{1
+function! colors#ColorGroups() " {{{1
 	" Sidebar groups
 	call g:HL("Sidebar", g:colors.fg, g:colors.sidebar, "")
 	call g:HL("SidebarEOB", g:colors.sidebar, g:colors.sidebar, "")
@@ -71,10 +69,10 @@ function! s:ColorGroups() " {{{1
 	call g:HL("CursorColumn", "", "", "")
 	call g:HL("CursorLine", "", "", "bold")
 	call g:HL("LineNr", g:colors.grey2, "", "")
-	call g:HL("CursorLineNr", g:colors.white, "", "bold")
+	call g:HL("CursorLineNr", g:colors.fg, "", "bold")
 
-	call g:HL("DiffAdd", g:colors.white, "", "")
-	call g:HL("DiffChange", g:colors.white, "", "")
+	call g:HL("DiffAdd", g:colors.fg, "", "")
+	call g:HL("DiffChange", g:colors.fg, "", "")
 	call g:HL("DiffDelete", g:colors.red, "", "")
 	call g:HL("DiffText", g:colors.blue, "", "")
 	call g:HL("ModeMsg", g:colors.yellow, "", "")
@@ -83,7 +81,7 @@ function! s:ColorGroups() " {{{1
 	call g:HL("Question", g:colors.purple, "", "")
 	call g:HL("MatchParen", g:colors.fg, g:colors.purple, "bold")
 
-	call g:HL("Pmenu", g:colors.white, g:colors.popup, "")
+	call g:HL("Pmenu", g:colors.fg, g:colors.popup, "")
 	call g:HL("PmenuSel", g:colors.black, g:colors.blue, "bold")
 	call g:HL("PmenuSbar", "", "", "")
 	call g:HL("PmenuThumb", "", g:colors.white, "")
@@ -96,14 +94,14 @@ function! s:ColorGroups() " {{{1
 	call g:HL("StatusLine", g:colors.fg, g:colors.bg, "bold")
 	call g:HL("StatusLineNC", g:colors.grey2, g:colors.bg, "underline")
 	call g:HL("TabLine", g:colors.fg, "", "none")
-	call g:HL("TabLineSel", g:colors.white, "", "bold")
+	call g:HL("TabLineSel", g:colors.fg, "", "bold")
 	call g:HL("TabLineFill", "", "", "none")
 
 	call g:HL("Visual", "", g:colors.popup, "")
 	call g:HL("VisualNOS", "", "", "")
 
 	call g:HL("ColorColumn", "", "", "")
-	call g:HL("Conceal", g:colors.white, "", "")
+	call g:HL("Conceal", g:colors.fg, "", "")
 	call g:HL("Directory", g:colors.blue, "", "")
 	call g:HL("VertSplit", g:colors.grey2, g:colors.bg, "")
 	call g:HL("Folded", g:colors.grey2, g:colors.bg, "")
@@ -112,7 +110,7 @@ function! s:ColorGroups() " {{{1
 
 	call g:HL("SpecialKey", g:colors.grey2, "", "")
 	call g:HL("Title", g:colors.green, "", "")
-	call g:HL("WildMenu", g:colors.white, "", "")
+	call g:HL("WildMenu", g:colors.fg, "", "")
 
 	call g:HL("Comment", g:colors.grey2, "", "italic")
 	call g:HL("SpecialComment", g:colors.grey2, "", "italic,bold")
@@ -130,7 +128,7 @@ function! s:ColorGroups() " {{{1
 	call g:HL("Keyword", g:colors.yellow, "", "bold")
 	call g:HL("Exception", g:colors.yellow, "", "bold")
 
-	call g:HL("Identifier", g:colors.white, "", "")
+	call g:HL("Identifier", g:colors.fg, "", "")
 	call g:HL("Function", g:colors.blue, "", "")
 	call g:HL("Statement", g:colors.red, "", "bold")
 
@@ -146,19 +144,15 @@ function! s:ColorGroups() " {{{1
 	call g:HL("Typedef", g:colors.yellow, "", "")
 
 	call g:HL("Operator", g:colors.purple, "", "bold")
-	call g:HL("SpecialChar", g:colors.white, "", "")
-	call g:HL("Tag", g:colors.white, "", "")
-	call g:HL("Delimiter", g:colors.white, "", "")
+	call g:HL("SpecialChar", g:colors.fg, "", "")
+	call g:HL("Tag", g:colors.fg, "", "")
+	call g:HL("Delimiter", g:colors.fg, "", "")
 	call g:HL("Debug", g:colors.yellow, "", "")
 	call g:HL("Underlined", g:colors.yellow, "", "")
 	call g:HL("Ignore", g:colors.yellow, "", "")
 	call g:HL("Todo", g:colors.yellow, "", "")
 
-	call g:HL("Error", {"gui":"#FF0000", "cterm":196}, "", "italic")
-	call g:HL("StyleError", {"gui":"#FF5F00", "cterm":202}, "", "italic")
-endfunction " }}}
-function! colors#SetSidebarHl() " {{{1
-	call g:HL("Normal", g:colors.fg, g:colors.sidebar, "")
-	call g:HL("MsgArea", g:colors.fg, g:colors.sidebar, "")
-	call g:HL("Folded", g:colors.fg, g:colors.sidebar, "")
+	call g:HL("Error", {"gui":"#FF0000", "cterm":196}, g:colors.bg, "italic")
+	call g:HL("Warning", {"gui":"#FFFF00", "cterm":226}, g:colors.bg, "italic")
+	call g:HL("StyleError", {"gui":"#FF5F00", "cterm":202}, g:colors.bg, "italic")
 endfunction " }}}

@@ -15,6 +15,7 @@ function! plugins#Initialize()
 	call plugins#SetupWM()
 	call plugins#SetupMultipleCursors()
 	call plugins#SetupMarkdownPreview()
+	call plugins#SetupTableMode()
 endfunction 
 " Language support plugins
 function! plugins#SetupDeoplete() " {{{1
@@ -22,15 +23,15 @@ function! plugins#SetupDeoplete() " {{{1
 	call deoplete#custom#option("auto_complete_delay", 0)
 endfunction " }}}
 function! plugins#SetupUltiSnips() " {{{1
-	let g:UltiSnipsExpandTrigger = "<C-u>"
-	let g:UltiSnipsJumpForwardTrigger = "<C-u>"
+	let g:UltiSnipsExpandTrigger = "<C-l>"
+	let g:UltiSnipsJumpForwardTrigger = "<C-l>"
 	let g:UltiSnipsJumpBackwardTrigger = "<S-Tab>"
-	let g:UltiSnipsListSnippets = "<F2>"
 endfunction " }}}
 function! plugins#SetupALE() " {{{1
 	let g:ale_linters = {'python':['flake8']}
 
 	let g:ale_sign_error = ' ✹'
+	let g:ale_sign_warning = ' ✹'
 	"let g:ale_sign_error = ' ✗'
 
 	hi def link ALEError Error
@@ -38,15 +39,17 @@ function! plugins#SetupALE() " {{{1
 	hi def link ALEStyleError StyleError
 	hi def link ALEStyleErrorSign StyleError
 
-	hi def link ALEWarning Todo
-	hi def link ALEStyleWarning Todo
+	hi def link ALEWarning Warning
+	hi def link ALEWarningSign Warning
+	hi def link ALEStyleWarning Warning
+	hi def link ALEStyleWarningSign Warning
 endfunction " }}}
 function! plugins#SetupVimspector() " {{{1
 	let g:vimspector_install_gadgets = [ "debugpy", "vscode-cpp" ]
 
 	let g:plugins#vimspector_templates = [ "python" ]
 	let g:plugins#vimspector_active = 0
-	
+
 	" Get the vimspector keyboard shortcuts from the leader menu
 	for q in g:leader#mappings
 		if q.name == "Vimspector"
@@ -130,8 +133,8 @@ endfunction " }}}
 
 " Miscellaneous plugins
 function! plugins#SetupWM() " {{{1
-	call tiler#GlobalEnable()
-
+	autocmd! VimEnter * call tiler#TabEnable()
+	
 	" Set keybindings
 	nnoremap <silent> <nowait> <C-q> :WindowClose<CR>
 	nnoremap <silent> <nowait> <C-w>c :WindowClose<CR>
@@ -154,16 +157,14 @@ function! plugins#SetupWM() " {{{1
 
 	nnoremap <silent> <nowait> <C-w>s :SidebarToggleOpen<CR>
 	nnoremap <silent> <nowait> <C-a> :SidebarToggleFocus<CR>
-	
+
 	" Custom colors
-	call tiler#colors#SetSidebarColor(g:colors.sidebar)
-	call tiler#colors#SetWindowColor(g:colors.bg)
-	"call tiler#colors#SetCurrentColor(g:colors.bg)
+	let g:tiler#colors#sidebar = g:colors.sidebar
+	let g:tiler#colors#window = g:colors.bg
+	"let g:tiler#colors#current = g:colors.bg
 
 	" Create sidebars
-	call tiler#sidebar#AddNew("filer", "call filer#Launch()")
-	call tiler#sidebar#AddNew("taglist", "Tlist")
-	call tiler#sidebar#AddNew("mundo", "MundoToggle")
+	let g:tiler#sidebars = {"filer":"FilerOpen", "taglist":"Tlist", "mundo":"MundoToggle"}
 
 	" Custom sidebar keybindings
 	nnoremap <silent> <A-1> :SidebarOpen filer<CR>
@@ -183,29 +184,13 @@ function! plugins#SetupMultipleCursors() " {{{1
 endfunction " }}}
 function! plugins#SetupMarkdownPreview() " {{{1
 	let g:mkdp_browser = 'surf'
+	let g:mkdp_auto_close = 0
 	let g:mkdp_page_title = '「${name}」'
 	let g:mkdp_filetypes = ['markdown']
-
-	let s:prev_line_nr = line('.')
-	let s:prev_line_content = getline(line('.'))
-	let g:ct = 0
+	let g:mkdp_highlight_css = '/home/adam/.config/nvim/files/markdown-preview.css'
 endfunction
-
-function! plugins#MarkdownCursor()
-	let g:ct += 1
-	call setline(s:prev_line_nr, s:prev_line_content)
-
-	let s:prev_line_nr = line('.')
-	let s:prev_line_content = getline(line('.'))
-
-	let cursor_char = '|'
-
-	if col('.') == 1
-		let new_line = cursor_char . getline('.')
-	else
-		let new_line = getline('.')[0:col('.') - 2] . cursor_char . getline('.')[col('.') - 1:-1]
-	endif
-
-	call setline(line('.'), new_line)
+" }}}
+" FUNCTION: plugins#SetupTableMode() {{{1
+function! plugins#SetupTableMode()
 endfunction
 " }}}

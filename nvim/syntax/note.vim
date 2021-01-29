@@ -4,27 +4,25 @@
 " Author:       Adam Tillou
 " ==============================================================================
 
-" Set fold settings
+" Set basic preferences
 setlocal foldmethod=indent
 setlocal foldlevel=0
+setlocal tabstop=4
+setlocal shiftwidth=4
+setlocal wrap
+
+" Bullet mapping
+noremap <silent> ` <Esc>mz:s/^\s*\zs[^•^	]/• &/<CR>:s/^\s*\zs• //<CR>
 
 " Parse syntax groups
-syn match noteTopicText '.*'
-syn match noteSectionText '.*'
-
-syn match Normal '.*'
-
-syn match noteTitle '\~\~\~.*\~\~\~'
-syn match noteTopicIcon '^# ' nextgroup=noteTopicText
-syn match noteSectionIcon '^\* ' nextgroup=noteSectionText
+syn match noteTitle '^\s*\~\~\~.*\~\~\~'
+syn match noteTopic '^\s*\*.*'
+syn match noteSection '^\s*>.*'
 syn match noteDefinition '^\s*.*\S:\ze '
 
 " Set different effects for each group
-call g:HL('noteTopicIcon', '', '', 'bold')
-call g:HL('noteSectionIcon', '', '', 'bold')
-
-call g:HL('noteTitle', '', '', 'bold,underline,italic')
-call g:HL('noteTopicText', '', '', 'bold,underline')
-call g:HL('noteSectionText', '', '', 'bold,italic')
+call g:HL('noteTitle', '', '', 'bold,underline')
+call g:HL('noteTopic', '', '', 'bold,underline')
+call g:HL('noteSection', '', '', 'bold,italic')
 
 call g:HL('noteDefinition', '', '', 'bold')

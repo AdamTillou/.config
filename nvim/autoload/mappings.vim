@@ -36,7 +36,7 @@ function! mappings#Initialize()
 	noremap <silent> Z "_d/\ze\S*\s*\%#<CR>
 	noremap d "_d
 	noremap D "_dd
-	nnoremap dd ^"_d$
+	nnoremap dd 0"_d$
 
 	noremap c "_c
 	noremap C "_cc
@@ -160,6 +160,8 @@ function! mappings#Initialize()
 	nnoremap gzC 100zc
 	nnoremap gzj ]z$l
 	nnoremap gzk [z$l
+	vnoremap gzj <Esc>]z$lmzgv`z
+	vnoremap gzk <Esc>[z$lmzgv`z
 	" }}}
 
 	" Insert mode mappings
@@ -178,7 +180,7 @@ function! mappings#Initialize()
 	imap <A-E> <Esc>Ea
 	imap <A-b> <Esc>bi
 	imap <A-B> <Esc>Bi
-	imap <expr> <Tab> pumvisible() ? "<C-y>" : "<Tab>"
+	imap <expr> <Tab> mappings#TabMapping()
 	" }}}
 	" Text modification mappings {{{1
 	inoremap <A-p> <Esc>pa
@@ -193,3 +195,19 @@ function! mappings#Initialize()
 	imap <A-d> <Esc>>i
 	" }}}
 endfunction
+
+function! mappings#TabMapping() " {{{1
+	" Check if a complete option is selected
+	if pumvisible() && complete_info().selected >= 0
+		return ""
+	endif
+
+	" Check if in table mode
+	if exists("b:table_mode_active") && b:table_mode_active
+		return '|'
+	endif
+	
+	" Return tab as default
+	return "	"
+endfunction
+" }}}

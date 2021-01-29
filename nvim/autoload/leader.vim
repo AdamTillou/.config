@@ -25,17 +25,21 @@ function! leader#Initialize()
 				\ 	{'letter':'g', 'name':'Gui Mode', 'command':':call functions#GuiMode()<CR>'},
 				\		{'letter':'w', 'name':'Window Manager', 'command':':call tiler#GlobalToggle()<CR>'},
 				\ ]},
+				\ {'letter':'g', 'name':'Get', 'command':[
+				\ 	{'letter':'s', 'name':'Syntax Group', 'command':':echo functions#SyntaxGroup()<CR>'},
+				\ ]},
 				\ {'letter':'o', 'name':'Open', 'command':[
 				\ 	{'letter':'h', 'name':'Help menu', 'command':':call functions#OpenInFloatingWindow("exec \"help \" . input(\"Help Term: \")")<CR>'},
 				\ 	{'letter':'g', 'name':'Help grep', 'command':':call functions#OpenInFloatingWindow("exec \"helpgrep \" . input(\"Help Grep: \")")<CR>'},
 				\ 	{'letter':'c', 'name':'Cheatsheet', 'command':':let term = input("Search Cheatsheet: ") \| call functions#FloatingWindow() \| exec "silent CheatReplace " . term<CR>'},
 				\ 	{'letter':'u', 'name':'Ultisnips', 'command':':call functions#OpenInFloatingWindow("split \| UltiSnipsEdit")<CR>'},
 				\ ]},
-				\ {'letter':'i', 'name':'Insert', 'ncommand':[
+				\ {'letter':'a', 'name':'Add', 'ncommand':[
 				\ 	{'letter':'l', 'name':'Line: │', 'command':'i│<Esc>l'},
 				\ 	{'letter':'h', 'name':'Hashtag Heading: │', 'command':'i#<Esc>yl79pyypO# <Esc>yl77pi##<Esc>03lR'},
 				\ ]},
 				\ {'letter':'r', 'name':'Replace', 'ncommand':':%s///g<Left><Left><Left>', 'vcommand':':s/\%V//g<Left><Left><Left>'},
+				\ {'letter':'x', 'name':'Execute', 'command':':call functions#Execute()<CR>'},
 				\ {'letter':'m', 'name':'Multi Cursor', 'command':[
 				\ 	{'letter':'s', 'name':'Start', 'command':'<Plug>multicursor_s'},
 				\ 	{'letter':'w', 'name':'Start Word', 'command':'<Plug>multicursor_w'},
@@ -57,6 +61,11 @@ function! leader#Initialize()
 				\ 	{'letter':'b', 'name':'Breakpoint', 'command':'<Plug>VimspectorToggleBreakpoint'},
 				\ 	{'letter':'f', 'name':'Function Breakpoint', 'command':'<Plug>VimspectorAddFunctionBreakpoint'},
 				\ 	{'letter':'c', 'name':'Conditional Breakpoint', 'command':'<Plug>VimspectorToggleConditionalBreakpoint'},
+				\ ]},
+				\ {'letter':'t', 'name':'Table Mode', 'command':':TableModeToggle<CR>:silent exec "set completeopt" . (b:table_mode_active ? "+" : "-") . "=noselect"<CR>:echo "Table mode is now " . (b:table_mode_active ? "en" : "dis") . "abled."<CR>'},
+				\ {'letter':'i', 'name':'Image', 'command':[
+				\ 	{'letter':'i', 'name':'Toggle Images', 'command':':ToggleImages<CR>'},
+				\ 	{'letter':'r', 'name':'Refresh Images', 'command':':RefreshImages<CR>'},
 				\ ]},
 				\ {'letter':'g', 'name':'Gonvim', 'command':[
 				\ 	{'letter':'a', 'name':'Add workspace', 'command':':GonvimWorkspaceNew<CR>'},

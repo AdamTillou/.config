@@ -1,0 +1,9 @@
+html, #page-header, .markdown-body {
+	color: #D7D7D7;
+	background-color: #282C34;
+}
+
+.markdown-body pre {
+	color: #D7D7D7;
+	background-color: #383C44;
+}

@@ -54,29 +54,21 @@ endfunction " }}}
 function! s:SetStatuslineType(arg) " {{{1
 	if a:arg == 0
 		let g:sttype = 0
-		hi StatusLine cterm=none gui=none
-		hi StatusLineNC cterm=none gui=none
 		set laststatus=0
 		set statusline=\ 
 		
 	elseif a:arg == 1
 		let g:sttype = 1
-		hi StatusLine cterm=bold gui=bold
-		hi StatusLineNC cterm=none gui=none
 		set laststatus=1
 		set statusline=\ %-0{expand\(\"%:t\"\)}\ 
 		
 	elseif a:arg == 2
 		let g:sttype = 2
-		hi StatusLine cterm=strikethrough gui=strikethrough
-		hi StatusLineNC cterm=strikethrough gui=strikethrough
 		set laststatus=0
 		set statusline=\ 
 
 	elseif a:arg == 3
 		let g:sttype = 3
-		hi StatusLine cterm=bold gui=bold
-		hi StatusLineNC cterm=underline gui=none
 		set laststatus=2
 		exec "set statusline=" . statusline#ComplexStatusline()
 
@@ -183,11 +175,13 @@ function! statusline#BufferName() " {{{1
 	endif
 endfunction " }}}
 function! statusline#Errors() " {{{1
-	let error_ct = 0
+	let error_ct = ale#statusline#Count(bufnr()).error
 	return (" " . error_ct)
 endfunction " }}}
 function! statusline#Warnings() " {{{
-	let warning_ct = 0
+	let warning_ct = ale#statusline#Count(bufnr()).style_error
+				\ + ale#statusline#Count(bufnr()).warning
+				\ + ale#statusline#Count(bufnr()).style_warning
 	return (" " . warning_ct)
 endfunction " }}}
 function! statusline#CursorLocation() " {{{1

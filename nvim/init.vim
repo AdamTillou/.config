@@ -11,7 +11,7 @@ set runtimepath=''
 let g:init#config = expand('<sfile>:p:h')
 let &runtimepath = printf('%s/vimfiles,%s,%s/vimfiles/after', $VIM, $VIMRUNTIME, $VIM)
 let &runtimepath = printf('%s,%s,%s/after', g:init#config, &runtimepath, g:init#config)
-"
+
 " Initialize basic settings
 call settings#Initialize()
 
@@ -52,6 +52,9 @@ Plug 'AdamTillou/vim-wm'
 " File tree
 Plug 'AdamTillou/vim-filetree'
 
+" Images
+Plug 'AdamTillou/vim-imager'
+
 " Undo tree
 Plug 'simnalamburt/vim-mundo'
 
@@ -67,13 +70,19 @@ Plug 'vim-scripts/taglist.vim'
 " Markdown preview
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
 
+" Latex preview
+Plug 'xuhdev/vim-latex-live-preview', { 'on': 'LLPStartPreview' }
+
 " Detect indent width
 Plug 'ciaranm/detectindent'
 
 " Cheat.sh
 Plug 'dbeniamine/cheat.sh-vim'
+
+" Tables
+Plug 'dhruvasagar/vim-table-mode'
 call plug#end() " }}}
 call plugins#Initialize()
 
 " Finish
-let already_loaded = 1
+let g:init#loaded = 1

@@ -7,17 +7,15 @@
 function! functions#Initialize()
 	" Create a command to show how many matches of a pattern are in a file
 	command -nargs=1 GetMatches let g:regex_list = functions#GetMatches(<args>) | echo string(len(g:regex_list)) 'matches found, check g:regex_list for full list'
+	command TestImage call functions#ShowImage('~/Pictures/Wallpaper/MountainWallpaper.jpg', 0, 0, 20, 20)
 endfunction
-
-" Get the character under the cursor {{{1
-function! functions#Getchar()
-	return strcharpart(strpart(getline('.'), col('.') - 1), 0, 1)
-endfun
-" }}}
 
 " Enable settings for gui mode {{{1
 function! functions#GuiMode()
-	NameStatusline
+	highlight Statusline cterm=none gui=none
+	highlight StatusLineNC cterm=none gui=none
+
+	ComplexStatusline
 	call tiler#colors#Enable()
 
 	let current_window = win_getid()
@@ -26,6 +24,8 @@ function! functions#GuiMode()
 		set fillchars=vert:\ 
 	endfor
 	call win_gotoid(current_window)
+
+	WindowRender
 endfun
 " }}}
 
@@ -83,6 +83,12 @@ function! functions#OpenInFloatingWindow(command)
 	noremap <buffer> <Esc> :bd!<CR>:q<CR>
 	noremap <buffer> <C-q> :bd!<CR>:q<CR>
 endfunction
+" }}}
+
+" Get the character under the cursor {{{1
+function! functions#Getchar()
+	return strcharpart(strpart(getline('.'), col('.') - 1), 0, 1)
+endfun
 " }}}
 
 " Java Imports {{{1
@@ -147,18 +153,45 @@ function! functions#AddToRegexList(value)
 endfunction
 " }}}
 
-" Add values of a regex to a list, g:regex_list {{{1
-function! functions#GetMatches(text, pattern)
-	let g:regex_list = []
-	let regex_length = 0
+" Execute the current program {{{1
+function! functions#Execute()
+	let split = split(expand('%:t'), '\.')
+	if len(split) < 2
+		return
+	endif
 
-	call substitute(a:text, a:pattern, '\=functions#AddToRegexList(submatch(0))', 'g')
+	let filetype = split[-1]
+	let extensions = {'py':'python3', 'lisp':'clisp'}
 
-	return g:regex_list
+	if filetype == 'md'
+		silent! MarkdownPreview
+
+	elseif has_key(extensions, filetype)
+		let prev_window = win_getid()
+		let path = expand('%:p')
+		write
+		new
+		setlocal nonumber
+		setlocal signcolumn=no
+		exec 'terminal echo "Running ' . path . '" ; echo ' . repeat('-', winwidth(0)) . ' ; ' . extensions[filetype] . ' ' . path
+		exec 'nnoremap <buffer> <Esc> :q!<Esc>:call win_gotoid(' . prev_window . ')<CR>'
+	endif
 endfunction
+" }}}
 
-function! functions#AddToRegexList(value)
-	call add(g:regex_list, a:value)
-	return ''
+" Get the syntax group of the current character " {{{
+function! functions#SyntaxGroup()
+	let coords = input("Input [LINE COLUMN] or leave blank for cursor: ")
+	if coords != '' && substitute(coords, '\d\+ \d\+', '', '') == ''
+		let line = split(coords, ' ')[0]
+		let col = split(coords, ' ')[1]
+	else
+		let line = line('.')
+		let col = col('.')
+	endif
+	redraw!
+	return "hi<" . synIDattr(synID(line,col,1),"name") . '> trans<'
+				\ . synIDattr(synID(line,col,0),"name") . "> lo<"
+				\ . synIDattr(synIDtrans(synID(line,col,1)),"name") . ">"
 endfunction
 " }}}
