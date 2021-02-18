@@ -12,6 +12,7 @@ function! leader#Initialize()
 				\ 		{'letter':'b', 'name':'Marker', 'command':':setlocal foldmethod=marker<CR>'},
 				\ 		{'letter':'m', 'name':'Manual', 'command':':setlocal foldmethod=manual<CR>'},
 				\ 		{'letter':'s', 'name':'Syntax', 'command':':setlocal foldmethod=syntax<CR>'},
+				\ 		{'letter':'o', 'name':'Fold one', 'command':':execute "setlocal foldminlines=" . string(-1 * (&foldminlines - 1))<CR>'},
 				\ 	]},
 				\ 	{'letter':'s', 'name':'Statusline', 'command':[
 				\ 		{'letter':'t', 'name':'Toggle', 'command':':ToggleStatusline<CR>'},
@@ -40,6 +41,10 @@ function! leader#Initialize()
 				\ ]},
 				\ {'letter':'r', 'name':'Replace', 'ncommand':':%s///g<Left><Left><Left>', 'vcommand':':s/\%V//g<Left><Left><Left>'},
 				\ {'letter':'x', 'name':'Execute', 'command':':call functions#Execute()<CR>'},
+				\ {'letter':'l', 'name':'LaTeX', 'ncommand':[
+				\ 	{'letter':'p', 'name':'Preview', 'command':':LLPStartPreview<CR>'},
+				\ 	{'letter':'h', 'name':'From Html', 'command':':call notes#HtmlToText()<CR>'},
+				\ ]},
 				\ {'letter':'m', 'name':'Multi Cursor', 'command':[
 				\ 	{'letter':'s', 'name':'Start', 'command':'<Plug>multicursor_s'},
 				\ 	{'letter':'w', 'name':'Start Word', 'command':'<Plug>multicursor_w'},
@@ -65,9 +70,9 @@ function! leader#Initialize()
 				\ {'letter':'t', 'name':'Table Mode', 'command':':TableModeToggle<CR>:silent exec "set completeopt" . (b:table_mode_active ? "+" : "-") . "=noselect"<CR>:echo "Table mode is now " . (b:table_mode_active ? "en" : "dis") . "abled."<CR>'},
 				\ {'letter':'i', 'name':'Image', 'command':[
 				\ 	{'letter':'i', 'name':'Toggle Images', 'command':':ToggleImages<CR>'},
-				\ 	{'letter':'r', 'name':'Refresh Images', 'command':':RefreshImages<CR>'},
+				\ 	{'letter':'r', 'name':'Reload Images', 'command':':ReloadImages<CR>'},
 				\ ]},
-				\ {'letter':'g', 'name':'Gonvim', 'command':[
+				\ {'letter':'u', 'name':'GUI', 'command':[
 				\ 	{'letter':'a', 'name':'Add workspace', 'command':':GonvimWorkspaceNew<CR>'},
 				\ 	{'letter':'w', 'name':'Switch to workspace', 'command':':exec "GonvimWorkspaceSwitch " . input("Switch to workspace:")<CR>'},
 				\ 	{'letter':'n', 'name':'Next workspace', 'command':':GonvimWorkspaceNext<CR>'},

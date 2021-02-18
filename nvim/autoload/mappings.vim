@@ -28,32 +28,54 @@ function! mappings#Initialize()
 	" Map { and } to go forward and backward through changes
 	nnoremap { g;
 	nnoremap } g,
+
+	" Insert mode movement
+	map! <A-h> <Left>
+	map! <A-j> <Down>
+	map! <A-k> <Up>
+	map! <A-l> <Right>
+	map! <A-H> <Left><Left><Left><Left>
+	map! <A-J> <Down><Down><Down><Down>
+	map! <A-K> <Up><Up><Up><Up>
+	map! <A-L> <Right><Right><Right><Right>
+	imap <A-w> <Esc>wi
+	imap <A-W> <Esc>Wi
+	imap <A-e> <Esc>ea
+	imap <A-E> <Esc>Ea
+	imap <A-b> <Esc>bi
+	imap <A-B> <Esc>Bi
 	" }}}
 	" Text modification mappings {{{1
-	noremap x "_x
-	noremap z "_X
-	noremap <silent> X "_d/\%#.\s*\S*\zs<CR>
-	noremap <silent> Z "_d/\ze\S*\s*\%#<CR>
-	noremap d "_d
-	noremap D "_dd
+	noremap z X
+	nnoremap <silent> X d/\%#.\s*\S*\zs<CR>
+	nnoremap <silent> Z d/\ze\S*\s*\%#<CR>
+	inoremap <expr> <A-x> col('.') < col('$') ? '<Esc>lxi' : ''
+	inoremap <expr> <A-z> col('.') > 1 ? '<Esc>xi' : ''
+	inoremap <expr> <BS> col('.') > 1 ? '<Esc>xi' : ''
+	inoremap <expr> <A-X> col('.') < col('$') ? '<Esc>ld/\%#.\s*\S*\zs<CR>i' : ''
+	inoremap <expr> <A-Z> col('.') > 1 ? '<Esc>ld/\ze\S*\s*\%#<CR>i' : ''
+
+	noremap D dd
 	nnoremap dd 0"_d$
 
-	noremap c "_c
-	noremap C "_cc
+	noremap C cc
 
-	noremap s d
-	noremap S dd
+	noremap s "0d
+	vnoremap s "0d
+	noremap S "0dd
 	nnoremap ss ^"0d$
 
 	noremap Y yy
 	nnoremap yy mz^"0y$`z
 
 	" Map g+key to add to the register
-	nnoremap gaY "zyy:let @0 .= "\n" . @z<CR>:let @" = @0<CR>
-	vnoremap gay "zy:let @0 .= "\n" . @z<CR>:let @" = @0<CR>
+	nnoremap gaY "zyy:let @0 .= (@0[len(@0)-1] == "\n" ? "" : "\n") . @z<CR>
+	nnoremap gay "zyy:let @0 .= (@0[len(@0)-1] == "\n" ? "" : "\n") . @z<CR>
+	vnoremap gay "zy:let @0 .= (@0[len(@0)-1] == "\n" ? "" : "\n") . @z<CR>
 
-	nnoremap gaS "zdd:let @0 .= "\n" . @z<CR>:let @" = @0<CR>
-	vnoremap gas "zd:let @0 .= "\n" . @z<CR>:let @" = @0<CR>
+	nnoremap gaS "zdd:let @0 .= (@0[len(@0)-1] == "\n" ? "" : "\n") . @z<CR>
+	nnoremap gas "zdd:let @0 .= (@0[len(@0)-1] == "\n" ? "" : "\n") . @z<CR>
+	vnoremap gas "zd:let @0 .= (@0[len(@0)-1] == "\n" ? "" : "\n") . @z<CR>
 
 	" Map g+key to use the system register
 	noremap gy "+y
@@ -72,6 +94,18 @@ function! mappings#Initialize()
 	" Map z and x to operate to the beginning and end of the line
 	onoremap z 0
 	onoremap x $
+
+	" Paste from the yank register
+	nnoremap p "0p
+	nnoremap P "0P
+	for i in range(26)
+		let q = 'abcdefghijklmnopqrstuvwxyg'[i]
+		execute printf('noremap "%sp "%sp', q, q)
+		execute printf('noremap "%sP "%sP', q, q)
+	endfor
+
+	inoremap <expr> <A-p> stridx(@0, "\n") == -1 ? '<Esc>"0pa' : '<Exc>"0pA'
+	inoremap <expr> <A-P> stridx(@0, "\n") == -1 ? '<Esc>mz"0p`za' : '<Exc>"0pA'
 	" }}}
 	" Buffer related mappings 	{{{1
 	noremap ( :bp!<CR>
@@ -86,8 +120,11 @@ function! mappings#Initialize()
 	" Map Ctrl+S to save
 	noremap <silent> <C-s> <Esc>:silent w<CR>
 
-	" Map Ctrl+X to exit
+	" Map Ctrl+X to save and exit vim
 	noremap <silent> <C-x> <Esc>:wa<CR>:qa!<CR>
+
+	" Map Ctrl+Z to force quit vim
+	noremap <silent> <C-z> <Esc>:qa!<CR>
 
 	" Map Ctrl+R to reload the config file
 	noremap <silent> <C-r> :exec "source " . g:init#config . "/init.vim"<CR>
@@ -98,6 +135,24 @@ function! mappings#Initialize()
 	noremap Q <Nop>
 	noremap gq q
 
+	" Map <Tab> to different functions based on the context
+	imap <expr> <Tab> TabMapping()
+	function! TabMapping() " {{{2
+		" Check if a complete option is selected
+		if pumvisible()
+			return ""
+		endif
+
+		" Check if in table mode
+		if exists("b:table_mode_active") && b:table_mode_active
+			return '|'
+		endif
+
+		" Return tab as default
+		return "	"
+	endfunction
+	" }}}
+
 	" Make F1 not bring up help menu
 	noremap <F1> <Nop>
 	noremap <M-F1> <Nop>
@@ -107,9 +162,6 @@ function! mappings#Initialize()
 	noremap <CR> o-<C-u><Esc>
 	noremap o o-<C-u>
 	noremap O O-<C-u>
-
-	" Map <Esc> to stay on the same character
-	inoremap <expr> <Esc> col(".")==1 ? "<Esc>" : "<Esc>l"
 
 	" Map Alt+q to esc
 	noremap <A-q> <Esc>l
@@ -140,10 +192,12 @@ function! mappings#Initialize()
 	nnoremap g= <C-a>
 
 	" Easier indenting
-	nnoremap > mz>>`zl
-	nnoremap <expr> < indent(line(".")) > 0 ? "mz<<`zh" : ""
+	nnoremap > a<--><Esc>>>$?<--><CR>da<h
+	nnoremap < a<--><Esc><<$?<--><CR>da<h
 	vnoremap > >gv
 	vnoremap < <gv
+	inoremap <A-a> <--><Esc><<$?<--><CR>da<i
+	inoremap <A-d> <--><Esc>>>?<--><CR>da<i
 
 	" Map space to toggle the current fold
 	nnoremap <Space> za
@@ -162,52 +216,9 @@ function! mappings#Initialize()
 	nnoremap gzk [z$l
 	vnoremap gzj <Esc>]z$lmzgv`z
 	vnoremap gzk <Esc>[z$lmzgv`z
-	" }}}
 
-	" Insert mode mappings
-	" Movement mappings {{{1
-	map! <A-h> <Left>
-	map! <A-j> <Down>
-	map! <A-k> <Up>
-	map! <A-l> <Right>
-	map! <A-H> <Left><Left><Left><Left>
-	map! <A-J> <Down><Down><Down><Down>
-	map! <A-K> <Up><Up><Up><Up>
-	map! <A-L> <Right><Right><Right><Right>
-	imap <A-w> <Esc>wi
-	imap <A-W> <Esc>Wi
-	imap <A-e> <Esc>ea
-	imap <A-E> <Esc>Ea
-	imap <A-b> <Esc>bi
-	imap <A-B> <Esc>Bi
-	imap <expr> <Tab> mappings#TabMapping()
-	" }}}
-	" Text modification mappings {{{1
-	inoremap <A-p> <Esc>pa
-	inoremap <A-P> <Esc>Pa
+	" Map Alt Enter to open a new line
 	inoremap <A-> <Esc>o
-	imap <A-x> <Esc>xi
-	imap <A-X> <Esc>Xi
-	imap <A-z> <Esc>zi
-	imap <A-Z> <Esc>Zi
-	imap <BS> <A-z>
-	imap <A-a> <Esc><i
-	imap <A-d> <Esc>>i
+
 	" }}}
 endfunction
-
-function! mappings#TabMapping() " {{{1
-	" Check if a complete option is selected
-	if pumvisible() && complete_info().selected >= 0
-		return ""
-	endif
-
-	" Check if in table mode
-	if exists("b:table_mode_active") && b:table_mode_active
-		return '|'
-	endif
-	
-	" Return tab as default
-	return "	"
-endfunction
-" }}}

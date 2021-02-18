@@ -58,7 +58,13 @@ function! colors#ColorGroups() " {{{1
 	call g:HL("SidebarEOB", g:colors.sidebar, g:colors.sidebar, "")
 	call g:HL("SidebarFold", g:colors.grey2, g:colors.sidebar, "")
 	call g:HL("SidebarSignColumn", "", g:colors.sidebar, "")
+	
+	" Style highlight groups
+	call g:HL("Bold", g:colors.fg, g:colors.bg, "bold")
+	call g:HL("Italic", g:colors.fg, g:colors.bg, "italic")
+	call g:HL("Underline", g:colors.bg, g:colors.bg, "underline")
 
+	" Default highlight groups
 	call g:HL("Normal", g:colors.fg, g:colors.bg, "")
 	call g:HL("NormalFloat", g:colors.fg, g:colors.bg, "")
 	call g:HL("NonText", g:colors.grey2, "", "")
@@ -101,7 +107,7 @@ function! colors#ColorGroups() " {{{1
 	call g:HL("VisualNOS", "", "", "")
 
 	call g:HL("ColorColumn", "", "", "")
-	call g:HL("Conceal", g:colors.fg, "", "")
+	call g:HL("Conceal", g:colors.fg, g:colors.bg, "")
 	call g:HL("Directory", g:colors.blue, "", "")
 	call g:HL("VertSplit", g:colors.grey2, g:colors.bg, "")
 	call g:HL("Folded", g:colors.grey2, g:colors.bg, "")

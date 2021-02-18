@@ -195,3 +195,14 @@ function! functions#SyntaxGroup()
 				\ . synIDattr(synIDtrans(synID(line,col,1)),"name") . ">"
 endfunction
 " }}}
+
+" Get the foldlevel for note folding " {{{1
+function! functions#NoteFoldlevel(line)
+	let current_line = len(substitute(getline(a:line), '^\t*\zs.*', '', ''))
+	if a:line == line('$')
+		return current_line
+	else
+		let next_line = len(substitute(getline(a:line + 1), '^\t*\zs.*', '', ''))
+		return max([current_line, next_line])
+	endif
+endfunction " }}}

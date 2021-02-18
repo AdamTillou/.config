@@ -1,28 +1,41 @@
 " ==============================================================================
 " Filename:     note.vim
-" Description:  Syntax for notes
+" Description:  Scripts for extra functionality in note files
 " Author:       Adam Tillou
 " ==============================================================================
 
-" Set basic preferences
-setlocal foldmethod=indent
-setlocal foldlevel=0
-setlocal tabstop=4
-setlocal shiftwidth=4
-setlocal wrap
+function! note#NewFile()
+	" Copy the contents of the initial file
+	norm! mzgg"zyG`z
 
-" Bullet mapping
-noremap <silent> ` <Esc>mz:s/^\s*\zs[^•^	]/• &/<CR>:s/^\s*\zs• //<CR>
+	" Create a new buffer
+	let note_buffer = bufnr()
+	let note_name = join(split(bufname(), '\.')[0:-2], '\.')
+	enew
+	execute 'file ' . note_name . '.noteview'
+	let b:note_buffer = note_buffer
+	call setbufvar(note_buffer, 'view_buffer', bufnr())
 
-" Parse syntax groups
-syn match noteTitle '^\s*\~\~\~.*\~\~\~'
-syn match noteTopic '^\s*\*.*'
-syn match noteSection '^\s*>.*'
-syn match noteDefinition '^\s*.*\S:\ze '
+	" Initialize the list to store folded text
+	let b:folds = []
+	let b:max_id = 1
 
-" Set different effects for each group
-call g:HL('noteTitle', '', '', 'bold,underline')
-call g:HL('noteTopic', '', '', 'bold,underline')
-call g:HL('noteSection', '', '', 'bold,italic')
+	" Paste the contents of the old file into the new file
+	norm! "zpgg
+	1delete
 
-call g:HL('noteDefinition', '', '', 'bold')
+	" Add an extra tab to the beginning of each line
+	2,$s/^/\t/
+
+	" Close all lines
+	call noteview#CloseAllFolds()
+
+	" Return to the first line of the file
+	call cursor(1, 1)
+endfunction
+
+if !exists('b:view_buffer')
+	call note#NewFile()
+endif
+
+nnoremap ;v :execute b:view_buffer . 'buffer!'<CR>

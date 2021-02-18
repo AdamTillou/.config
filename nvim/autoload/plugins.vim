@@ -15,7 +15,6 @@ function! plugins#Initialize()
 	call plugins#SetupWM()
 	call plugins#SetupMultipleCursors()
 	call plugins#SetupMarkdownPreview()
-	call plugins#SetupTableMode()
 endfunction 
 " Language support plugins
 function! plugins#SetupDeoplete() " {{{1
@@ -134,7 +133,7 @@ endfunction " }}}
 " Miscellaneous plugins
 function! plugins#SetupWM() " {{{1
 	autocmd! VimEnter * call tiler#TabEnable()
-	
+
 	" Set keybindings
 	nnoremap <silent> <nowait> <C-q> :WindowClose<CR>
 	nnoremap <silent> <nowait> <C-w>c :WindowClose<CR>
@@ -188,9 +187,5 @@ function! plugins#SetupMarkdownPreview() " {{{1
 	let g:mkdp_page_title = '「${name}」'
 	let g:mkdp_filetypes = ['markdown']
 	let g:mkdp_highlight_css = '/home/adam/.config/nvim/files/markdown-preview.css'
-endfunction
-" }}}
-" FUNCTION: plugins#SetupTableMode() {{{1
-function! plugins#SetupTableMode()
 endfunction
 " }}}
