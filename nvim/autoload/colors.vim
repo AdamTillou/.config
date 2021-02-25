@@ -12,7 +12,7 @@ function! colors#Initialize()
 	set t_Co=256
 	filetype plugin on
 	set background=dark
-	
+
 	call colors#ColorVariables()
 	call colors#ColorGroups()
 endfunction
@@ -58,7 +58,7 @@ function! colors#ColorGroups() " {{{1
 	call g:HL("SidebarEOB", g:colors.sidebar, g:colors.sidebar, "")
 	call g:HL("SidebarFold", g:colors.grey2, g:colors.sidebar, "")
 	call g:HL("SidebarSignColumn", "", g:colors.sidebar, "")
-	
+
 	" Style highlight groups
 	call g:HL("Bold", g:colors.fg, g:colors.bg, "bold")
 	call g:HL("Italic", g:colors.fg, g:colors.bg, "italic")
@@ -92,10 +92,10 @@ function! colors#ColorGroups() " {{{1
 	call g:HL("PmenuSbar", "", "", "")
 	call g:HL("PmenuThumb", "", g:colors.white, "")
 
-	call g:HL("SpellBad", g:colors.red, "", "")
-	call g:HL("SpellCap", g:colors.yellow, "", "")
-	call g:HL("SpellLocal", g:colors.yellow, "", "")
-	call g:HL("SpellRare", g:colors.yellow, "", "")
+	call g:HL("SpellBad", g:colors.red, g:colors.bg, "")
+	call g:HL("SpellCap", g:colors.yellow, g:colors.bg, "")
+	call g:HL("SpellLocal", g:colors.yellow, g:colors.bg, "")
+	call g:HL("SpellRare", g:colors.yellow, g:colors.bg, "")
 
 	call g:HL("StatusLine", g:colors.fg, g:colors.bg, "bold")
 	call g:HL("StatusLineNC", g:colors.grey2, g:colors.bg, "underline")

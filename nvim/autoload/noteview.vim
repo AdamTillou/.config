@@ -4,94 +4,132 @@
 " Author:       Adam Tillou
 " ==============================================================================
 
-" Settings {{{1
-" Set basic preferences
-setlocal tabstop=2
-setlocal shiftwidth=2
-setlocal nowrap
-setlocal nolist
-set conceallevel=1
-set concealcursor=nvic
+function! noteview#Settings() " {{{1
+	" Settings {{{2
+	" Set basic preferences
+	setlocal tabstop=2
+	setlocal shiftwidth=2
+	setlocal nowrap
+	setlocal nolist
+	setlocal spell
+	setlocal conceallevel=1
+	setlocal concealcursor=nvic
 
-" Setup autocommands
-autocmd BufWriteCmd *.noteview call noteview#Write()
+	" Setup autocommands
+	autocmd BufWriteCmd *.noteview call noteview#Write()
+	" }}}
+	" Highlighting {{{2
+	" Parse syntax groups
+	syntax match noteTopic /#[^#].*/ containedin=noteTopicLine
+	syntax match noteTopic /#$/ containedin=noteTopicLine
+	syntax match noteSection /##[^#].*/ containedin=noteSectionLine
+	syntax match noteSection /##$/ containedin=noteSectionLine
 
-" Prevent the cursor from going onto the end characters of the file
-autocmd CursorMoved *.noteview silent! norm! /\d*\%#\d*$
-" }}}
-" Highlighting {{{1
-" Set up syntax groups to conceal the list index numbers
-syntax match FoldNumber /^\s*[▾▸]\zs./ conceal cchar= 
+	syntax match Normal /./
 
-" Parse syntax groups
-syntax match noteTopic /#[^#].*/ containedin=noteTopicLine
-syntax match noteTopic /#$/ containedin=noteTopicLine
-syntax match noteSection /##[^#].*/ containedin=noteSectionLine
-syntax match noteSection /##$/ containedin=noteSectionLine
+	" Set up syntax groups to conceal the list index numbers
+	syntax match noteIndicator /[▾▸]\zs./ conceal cchar= 
 
-syntax match Normal /./
+	syntax match noteLine /^.*/ contains=noteIndicator
+	syntax match noteTitle /\~\~\~.*\~\~\~/
+	syntax match noteDefinition /^\s*\([▾▸].\)\?\s*[^:]*:\ze.*/ contains=noteIndicator
+	syntax match noteTopicLine /^\s*\([▾▸].\)\?\s*#[^#].*/ contains=noteIndicator,noteTopic
+	syntax match noteTopicLine /^\s*\([▾▸].\)\?\s*#$/ contains=noteIndicator,noteTopic
+	syntax match noteSectionLine /^\s*\([▾▸].\)\?\s*##[^#].*/ contains=noteIndicator,noteSection
+	syntax match noteSectionLine /^\s*\([▾▸].\)\?\s*##$/ contains=noteIndicator,noteSection
 
-syntax match noteTitle /\~\~\~.*\~\~\~/
-syntax match noteDefinition /^\s*\([▾▸].\)\?\s*[^:]*:\ze.*/ contains=FoldNumber
-syntax match noteTopicLine /^\s*\([▾▸].\)\?\s*#[^#].*/ contains=FoldNumber,noteTopic
-syntax match noteTopicLine /^\s*\([▾▸].\)\?\s*#$/ contains=FoldNumber,noteTopic
-syntax match noteSectionLine /^\s*\([▾▸].\)\?\s*##[^#].*/ contains=FoldNumber,noteSection
-syntax match noteSectionLine /^\s*\([▾▸].\)\?\s*##$/ contains=FoldNumber,noteSection
-
-" Set different effects for each group
-call g:HL('noteTitle', g:colors.purple, '', 'bold,underline')
-call g:HL('noteTopicLine', g:colors.blue, '', 'bold')
-call g:HL('noteTopic', g:colors.blue, '', 'bold,underline')
-call g:HL('noteSectionLine', g:colors.cyan, '', 'bold')
-call g:HL('noteSection', g:colors.cyan, '', 'bold,italic')
-call g:HL('noteDefinition', '', '', 'bold')
-" }}}
-" Mappings {{{1
-nnoremap <silent> <buffer> gzM :call noteview#CloseAllFolds()<CR>
-nnoremap <silent> <buffer> gzR :call noteview#OpenAllFolds()<CR>
-nnoremap <silent> <buffer> gzh :call noteview#CloseParentFold(line('.'))<CR>
-nnoremap <silent> <buffer> gzl :if noteview#GetLineStatus(getline('.')) == 'closed' | call noteview#OpenFold(line('.')) | execute 'norm! j^' | endif<CR>
-nnoremap <silent> <buffer> <Space> :call noteview#ToggleFold(line('.'))<CR>
-nnoremap <silent> <buffer> g<Space> :call noteview#FullyToggleFold(line('.'))<CR>
-
-" Only works in a gui
-nnoremap <silent> <buffer> <S-Space> :call noteview#FullyToggleFold(line('.'))<CR>
-
-" Easy bullet mapping
-inoremap <silent> ` •
-
-" Set mappings to avoid messing up the file  hi
-onoremap <buffer> <expr> x noteview#GetLineStatus(getline('.')) == 'none' ? '$' : '/<C-v><CR>'
-onoremap <buffer> <expr> gl noteview#GetLineStatus(getline('.')) == 'none' ? '$' : '/<C-v><CR>'
-onoremap <buffer> <expr> $ noteview#GetLineStatus(getline('.')) == 'none' ? '$' : '/<C-v><CR>'
-
-nnoremap <buffer> <expr> A noteview#GetLineStatus(getline('.')) == 'none' ? '$a' : '/<C-v><CR>a'
-nnoremap <buffer> <expr> I noteview#GetLineStatus(getline('.')) == 'none' ? '^i' : '0/[▸▾]<CR>la'
-
-nnoremap <buffer> <expr> dd noteview#GetLineStatus(getline('.')) == 'none' ? '^d$' : '0/[▸▾]<CR>2ld/<C-v><CR>'
-nnoremap <buffer> <expr> cc noteview#GetLineStatus(getline('.')) == 'none' ? '^c$' : '0/[▸▾]<CR>2lc/<C-v><CR>'
-inoremap <buffer> <expr> <A-x> getline('.')[col('.')-1] != '' ? '<Esc>lxi' : ''
-nnoremap <buffer> <silent> x d/\%#[^<C-v><Esc>^▸^▾]\?\zs<CR>
-nnoremap <buffer> <silent> z d/[^<C-v><Esc>^▸^▾]\?\%#<CR>
-nnoremap <buffer> <silent> X d/\%#\([^<C-v><Esc>]\s*[^ ^	^<C-v><Esc>]*\)\?\zs<CR>
-nnoremap <buffer> <silent> Z d/\ze\([^ ^	^▸^▾]*\s*\)\?\%#<CR>
+	" Set different effects for each group
+	let title_color = {"gui": "#FFD75F", "cterm": "221"}
+	let topic_color = {"gui": "#5FAFD7", "cterm": "74"}
+	let section_color = {"gui": "#FF87AF", "cterm": "211"}
+	call g:HL('noteTitle', title_color, '', 'bold,underline')
+	call g:HL('noteTopicLine', topic_color, '', 'bold')
+	call g:HL('noteTopic', topic_color, '', 'bold,underline')
+	call g:HL('noteSectionLine', section_color, '', 'bold')
+	call g:HL('noteSection', section_color, '', 'bold,italic')
+	call g:HL('noteDefinition', '', '', 'bold')
+	" }}}
+	" Mappings {{{2
+	nnoremap <silent> <buffer> gzM :call noteview#CloseAllFolds()<CR>
+	nnoremap <silent> <buffer> gzR :call noteview#OpenAllFolds()<CR>
+	nnoremap <silent> <buffer> gzh :call noteview#CloseParentFold(line('.'))<CR>
+	nnoremap <silent> <buffer> <Space> :call noteview#ToggleFold(line('.'))<CR>
+	nnoremap <silent> <buffer> g<Space> :call noteview#FullyToggleFold(line('.'))<CR>
+	nnoremap <silent> <buffer> gZ z
+	" }}}
+endfunction
 " }}}
 
-function! noteview#Write() " {{{1
-	" If the current buffer is not the view buffer, cancel, because a write all
-	" is being executed
-	if  bufname(0) != bufname()
-		return
+function! noteview#NoteToNoteview() " {{{1
+	" Return if not a proper noteview buffer
+	if !exists('b:view_buffer')
+		if exists('b:note_buffer')
+			execute b:note_buffer . 'buffer'
+		else
+			return
+		endif
+	endif
+	let note_buffer = bufnr()
+	let view_buffer = b:view_buffer
+
+	" Get the text of the note buffer
+	let note_text = nvim_buf_get_lines(note_buffer, 0, -1, 0)
+
+	" Go to the view buffer and set the lines
+	execute view_buffer . 'buffer'
+	1,$delete
+	call nvim_buf_set_lines(view_buffer, 0, 1, 0, note_text)
+
+	" Add an extra tab to the beginning of each line
+	if substitute(getline(1), '^\s*\~\~\~.*\~\~\~$', '', 'g') == '' && getline(1) != ''
+		2,$s/^/\t/
+	else
+		1,$s/^/\t/
 	endif
 
-	" Remember the document as it is
-	let cursor_location = [line('.'), col('.')]
-	norm! gg"zyG
-	let current_document = @z
-	let current_buffer = bufnr()
+	" Close all of the folds
+	call noteview#CloseAllFolds()
+
+	" Remove the last line if it is blank
+	if substitute(getline('$'), '\s*', '', '') == ''
+		$delete
+	endif
+
+	" Go to the beginning of the document
+	call cursor(1, 1)
+endfunction " }}}
+function! noteview#NoteviewToNote() " {{{1
+	" Return if not a proper noteview buffer
+	if !exists('b:note_buffer')
+		if exists('b:view_buffer')
+			execute b:view_buffer . 'buffer'
+		else
+			return
+		endif
+	endif
+	let note_buffer = b:note_buffer
+
+	" Remember how the noteview buffer was before writing
+	let noteview_buffer = bufnr()
+	let noteview_cursor = [line('.'), col('.')]
+	let noteview_layout = nvim_buf_get_lines(0, 0, -1, 0)
 
 	" Open all of the folds
 	call noteview#OpenAllFolds()
+
+	" Get the text of the fully expanded noteview buffer
+	let noteview_text = nvim_buf_get_lines(noteview_buffer, 0, -1, 0)
+
+	" Restore the noteview buffer to how it was previously
+	execute noteview_buffer . 'buffer'
+	1,$delete
+	call nvim_buf_set_lines(0, 0, 1, 0, noteview_layout)
+	call cursor(noteview_cursor)
+
+	" Go to the note buffer and add the lines of the expanded noteview buffer
+	execute note_buffer . 'buffer'
+	1,$delete
+	call nvim_buf_set_lines(note_buffer, 0, 1, 0, noteview_text)
 
 	" Remove the extra tab from lines that don't have a fold indicator
 	silent! v/^\s*[▸▾]/s/^\t//
@@ -102,26 +140,20 @@ function! noteview#Write() " {{{1
 	" If there are any spaces in indentation, remove them
 	silent! %s/^\t*\zs \+\ze\t*//g
 
-	" Copy the new buffer text, now in a plain text format
-	norm! gg"zyG
-	let origional_document = @z
+	" Remove image filler lines if there are any
+	silent! %s/^\s*<<imgline>>\n//g
+endfunction
+" }}}
 
-	" Go to the origional document and replace it with the text
-	execute b:note_buffer . 'buffer!'
-	1,$delete
-	norm! "zp
-	1delete
+function! noteview#Write() " {{{1
+	" Simplify the noteview buffer into the note buffer
+	call noteview#NoteviewToNote()
 
-	" Write the file
+	" Write the note buffer
 	write
 
-	" Restore the origional preview
-	execute current_buffer . 'buffer!'
-	let @z = current_document
-	1,$delete
-	norm! "zp
-	1delete
-	call cursor(cursor_location)
+	" Return to the noteview buffer
+	execute b:view_buffer . 'buffer'
 endfunction
 " }}}
 
@@ -147,8 +179,14 @@ function! noteview#CloseFold(line) " {{{1
 	let current_indent = noteview#GetLineIndent(current_text)
 	let check_line = a:line + 1
 	let fold_lines = []
+
 	while check_line <= line('$') && noteview#GetLineIndent(getline(check_line)) > current_indent
-		call add(fold_lines, getline(check_line))
+		let check_line_text = getline(check_line)
+		" Do not add the line if it is a filler image line
+		if check_line_text == '' || substitute(check_line_text, '^\s*<<imgline>>', '', '') != ''
+			call add(fold_lines, check_line_text)
+		endif
+
 		let check_line += 1
 	endwhile
 
@@ -188,7 +226,7 @@ function! noteview#CloseFold(line) " {{{1
 
 	" Delete the folded lines
 	let first_line = a:line + 1
-	let last_line = a:line + len(fold_lines)
+	let last_line = check_line - 1
 	execute printf('%d,%d delete', first_line, last_line)
 
 	" Return to the origional cursor position
@@ -206,7 +244,20 @@ function! noteview#OpenFold(line) " {{{1
 		let fold_lines = b:folds[fold_index]
 
 		" Add the folded lines
-		call append(a:line, fold_lines)
+		let insert_position = a:line
+		for q in fold_lines
+			call append(insert_position, [q])
+			let insert_position += 1
+
+			" If it is an image, add filler lines
+			let image_regexp = '^\(\s*\).*<<\(img\|tex\) \(path\|formula\)="\([^"]\+\)" height=\(\d\+\)>>.*$'
+			let potential_height = substitute(q, image_regexp, '\5', '')
+			if potential_height != q
+				let indent_string = substitute(q, image_regexp, '\1', '')
+				call append(insert_position, repeat([indent_string . '<<imgline>>'], potential_height - 1))
+				let insert_position += potential_height - 1
+			endif
+		endfor
 
 		" Replace the closed triangle with an open one
 		execute a:line . 's/▸/▾/'

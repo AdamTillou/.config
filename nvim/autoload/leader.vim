@@ -136,7 +136,6 @@ function! leader#SelectMenu(mode, title, options) " {{{1
 		else
 			exec a:mode[0] . 'map <nowait> \ ' . command
 		endif
-		let g:cmd = command
 
 		if a:mode == 'visual'
 			norm! gv

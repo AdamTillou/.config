@@ -4,10 +4,7 @@
 " Author:       Adam Tillou
 " ==============================================================================
 
-function! note#NewFile()
-	" Copy the contents of the initial file
-	norm! mzgg"zyG`z
-
+if !exists('b:view_buffer')
 	" Create a new buffer
 	let note_buffer = bufnr()
 	let note_name = join(split(bufname(), '\.')[0:-2], '\.')
@@ -20,22 +17,15 @@ function! note#NewFile()
 	let b:folds = []
 	let b:max_id = 1
 
-	" Paste the contents of the old file into the new file
-	norm! "zpgg
-	1delete
-
-	" Add an extra tab to the beginning of each line
-	2,$s/^/\t/
-
-	" Close all lines
-	call noteview#CloseAllFolds()
-
-	" Return to the first line of the file
-	call cursor(1, 1)
-endfunction
-
-if !exists('b:view_buffer')
-	call note#NewFile()
+	" Convert the note text into a formatted view buffer
+	call noteview#NoteToNoteview()
+	
+	" Create a timer in order to enter the view buffer immediately after vim
+	" finishes loading the note file
+	call timer_start(1, 'EnterViewBuffer')
+	function! EnterViewBuffer(timer)
+		call timer_stop(a:timer)
+		execute b:view_buffer . 'buffer'
+		call noteview#Settings()
+	endfunction
 endif
-
-nnoremap ;v :execute b:view_buffer . 'buffer!'<CR>

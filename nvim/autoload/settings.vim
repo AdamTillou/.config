@@ -22,11 +22,19 @@ function! settings#Initialize()
 	set completeopt=menuone,noinsert " Show the autocomplete menu even if there is only 1 option
 	set hidden " Unload empty buffers when they are hidden
 	let mapleader='|'
-	
+
+	" Enable concealing
+	set conceallevel=1
+	set concealcursor=nvic
+
+	" Save words to a spellfile, but don't enable spelling by default
+	execute 'set spellfile=' . g:init#config . '/files/spellfile.add'
+	set nospell
+
 	" Set gui specific options
 	set guifont=FiraCode:h11 " Set the default font for gui mode
 	set linespace=3 " Set the spacing between each line
-	
+
 	" Set default foldmethod to indent, with folds always open
 	set foldmethod=indent
 	set foldlevel=100
@@ -57,17 +65,17 @@ function! settings#Initialize()
 
 	" Set special characters
 	set fillchars=vert:\│
-	
+
 	set listchars=eol:↲,tab:\ \ 
 
 	" Set gui options
 	if exists("g:neovide") && g:neovide
 		let g:neovide_cursor_animation_length = 0
 	endif
-	
+
 	" Reload stubborn settings when entering a python file
 	autocmd BufWinEnter *.py setlocal noexpandtab | setlocal shiftwidth=2 | setlocal tabstop=2
-	
+
 	" Load syntax file for notes
 	autocmd BufWinEnter *.note exec 'source ' . g:init#config . '/syntax/note.vim'
 endfunction

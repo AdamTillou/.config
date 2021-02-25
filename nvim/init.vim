@@ -82,8 +82,9 @@ Plug 'dbeniamine/cheat.sh-vim'
 " Tables
 Plug 'dhruvasagar/vim-table-mode'
 
-" Layout
-Plug 'AdamTillou/wysiwyg.vim'
+" Email client
+Plug 'soywod/iris.vim'
+
 call plug#end() " }}}
 call plugins#Initialize()
 

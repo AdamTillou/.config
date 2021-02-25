@@ -15,6 +15,9 @@ function! plugins#Initialize()
 	call plugins#SetupWM()
 	call plugins#SetupMultipleCursors()
 	call plugins#SetupMarkdownPreview()
+
+	" Seperate plugins
+	call plugins#SetupIris()
 endfunction 
 " Language support plugins
 function! plugins#SetupDeoplete() " {{{1
@@ -187,5 +190,12 @@ function! plugins#SetupMarkdownPreview() " {{{1
 	let g:mkdp_page_title = '「${name}」'
 	let g:mkdp_filetypes = ['markdown']
 	let g:mkdp_highlight_css = '/home/adam/.config/nvim/files/markdown-preview.css'
+endfunction
+" }}}
+
+" Seperate plugins
+function! plugins#SetupIris() " {{{1
+	let g:iris_name  = "Adam"
+	let g:iris_mail = "adam.tillou@gmail.com"
 endfunction
 " }}}

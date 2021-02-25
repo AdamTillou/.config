@@ -1,0 +1,220 @@
+" Images
+function! noteview#EnableImages() " {{{1
+	" Tell the user that images are going to be enabled
+	echo 'Enabling images...'
+
+	" Store that images are active
+	let g:noteview#images = 1
+
+	" Create autocommands to detect when to refresh the images
+	let s:first_line = line('w0')
+	augroup refreshImages
+		autocmd!
+		autocmd CursorMoved * if line('w0') != s:first_line | let s:first_line = line('w0') | call noteview#LoadImages() | endif
+		autocmd BufWritePost * call noteview#LoadImages()
+	augroup END
+
+	" Enable syntax for concealing the image keys
+	execute printf('syntax match noteviewImageKey /%s/ conceal', s:image_regexp)
+	execute printf('syntax match noteviewImageFiller /%s/ conceal', s:imgline_regexp)
+	redraw!
+
+	" Run the function to show images when enabling
+	call noteview#LoadImages()
+
+	" Tell the user that images have been enabled
+	redraw!
+	echo 'Images are now enabled'
+endfunction
+" }}}
+function! noteview#DisableImages() " {{{1
+	" Tell the user that images are going to be disabled
+	echo 'Disabling images...'
+
+	" Store that images are inactive
+	let g:noteview#images = 0
+
+	" Disable all autocommands
+	augroup refreshImages
+		autocmd!
+	augroup END
+
+	" Disable the syntax for concealing the image keys
+	execute printf('syntax match noteviewImageKey /%s/', s:image_regexp)
+	execute printf('syntax match noteviewImageFiller /%s/', s:imgline_regexp)
+
+	" Kill all of the old images
+	for q in s:image_list
+		silent! execute q.terminal . 'bdelete!'
+	endfor
+
+	" Tell the user that images have been disabled
+	redraw!
+	echo 'Images are now disabled'
+endfunction
+" }}}
+function! noteview#ToggleImages() " {{{1
+	if exists('g:noteview#images') && g:noteview#images
+		call noteview#DisableImages()
+	else
+		call noteview#EnableImages()
+	endif
+endfunction
+" }}}
+function! noteview#LoadImages() " {{{1
+	" Return if not active
+	if !exists('g:noteview#images') || !g:noteview#images
+		return
+	endif
+
+	" Create an empty list if the list of previous images is not set
+	if !exists('s:image_list')
+		let s:image_list = []
+	endif
+
+	" Create a latex directory if it doesn't already exist
+	if !system('[[ -d /tmp/latex_images ]] && echo 1')
+		silent! !mkdir /tmp/latex_images
+	endif
+
+	" Set the max id variable if it doesnt exist
+	if !exists('s:max_image_id')
+		let s:max_image_id = 1
+	endif
+
+	" Create a list of all images
+	let new = s:GetImageList()
+	let old = s:image_list
+
+	" Figure out which images to remove
+	let images_to_kill = []
+	for q in old
+		let has_a_match = 0
+		for r in new
+			" Check whether the images are the same
+			let same = 1
+			for key in keys(q)
+				if key != 'terminal' && q[key] != r[key]
+					let same = 0
+					break
+				endif
+			endfor
+			if same
+				let has_a_match = 1
+				let r.terminal = q.terminal
+				break
+			endif
+		endfor
+
+		if !has_a_match
+			call add(images_to_kill, q)
+		endif
+	endfor
+
+	" Kill all of the old images
+	for q in images_to_kill
+		silent! execute q.terminal . 'bdelete!'
+	endfor
+
+	" Display all of the new images
+	for q in new
+		if !has_key(q, 'terminal')
+			call s:ShowImage(q)
+		endif
+	endfor
+
+	let s:image_list = new
+endfunction
+" }}}
+function! s:GetImageList() " {{{1
+	let lines = nvim_buf_get_lines(0, 0, -1, 0)
+	let image_list = []
+	let formula_list = []
+
+	for i in range(len(lines))
+		let potential_image = substitute(lines[i], s:image_regexp, '\2\4\5', '')
+
+		if potential_image != lines[i]
+			let image_items = split(potential_image, '')
+
+			" Get the position of the image on the screen
+			let screen_position = screenpos(win_getid(winnr()), i + 1, stridx(lines[i], '<<') + 1)
+			if screen_position.row == 0
+				continue
+			endif
+
+			let image_dict = {'content':image_items[1],
+						\ 'height':image_items[2],
+						\ 'row':screen_position.row - 1,
+						\ 'col':screen_position.col - 1}
+			if image_items[0] == 'img'
+				call add(image_list, image_dict)
+			elseif image_items[0] == 'tex'
+				call add(formula_list, image_dict)
+			endif
+		endif
+	endfor
+
+	" Generate latex
+	for q in formula_list
+		" Generate a hash to use as the file name
+		let hash = split(system(printf('echo -n "%s" | md5sum', q.content)), ' ')[0]
+
+		" If it doesnt exist, generate a latex image and move it into the directory in /tmp/
+		if !system(printf("[[ -f '/tmp/latex_images/%s.png' ]] && echo 1", hash))
+			" If the foreground or background colors are a hex value, add HTML:
+			" before them to make the hex code valid
+			if substitute(s:formula_foreground, '\x\{6}', '', '') == ''
+				let foreground = 'HTML:' . s:formula_foreground
+			else
+				let foreground = s:formula_foreground
+			endif
+			if substitute(s:formula_background, '\x\{6}', '', '') == ''
+				let background = 'HTML:' . s:formula_background
+			else
+				let background = s:formula_background
+			endif
+
+			" Convert the latex expression into an image
+			silent! execute printf("!tex2im '%s' -o %s -b %s -t %s", q.content, hash, background, foreground)
+			silent! execute printf("!mv '%s.png' /tmp/latex_images", hash)
+		endif
+
+		" Add the latex image to the image list
+		let image_dict = {'content':hash, 'height':q.height, 'row':q.row, 'col':q.col}
+		call add(image_list, image_dict)
+	endfor
+
+	let g:img = image_list
+	return image_list
+endfunction
+" }}}
+function! s:ShowImage(image) " {{{
+	" Get the path of the image
+	let path = '/tmp/latex_images/' . a:image.content . '.png'
+
+	" Format the command to execute
+	let identifier = getpid() . '-' . s:max_image_id
+	let s:max_image_id += 1
+	let script_path = g:init#config . '/files/ueberzug.sh'
+
+	let command = printf("%s %s '%s' %s %s %s", 
+				\ script_path,
+				\ identifier,
+				\ path,
+				\ a:image.col,
+				\ a:image.row,
+				\ a:image.height)
+	let g:cmd = command
+
+	" Run the command in a terminal in a new tab, then close it
+	new
+	call termopen(command)
+	setlocal nobuflisted
+	let terminal_buffer = bufnr()
+	close!
+
+	" Save the buffer of the terminal so that it can be closed later
+	let a:image.terminal = terminal_buffer
+endfunction
+" }}}
