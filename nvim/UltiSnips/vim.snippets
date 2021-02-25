@@ -1,0 +1,66 @@
+snippet i "If statements"
+if ${1:condition}
+endif
+endsnippet
+
+snippet ie "If statements"
+if ${1:condition}
+else
+endif
+endsnippet
+
+snippet f "For loop"
+for ${1:condition}
+endfor
+endsnippet
+
+snippet fr "For i in range"
+for i in range(${1:range})
+endfor
+endsnippet
+
+snippet fl "For i in list"
+for i in range(len(${1:list}))
+endfor
+endsnippet
+
+snippet fi "For loop with range"
+for i in range(${1:range})
+endfor
+endsnippet
+
+snippet fq "For loop through list"
+for q in ${1:list}
+endfor
+endsnippet
+
+snippet while "While loop"
+while ${1:condition}
+endwhile
+endsnippet
+
+snippet su "Local function"
+function! ${1:name}(${2:args})
+endfunction
+endsnippet
+
+snippet gu "Global function"
+function! `!v len(split(expand('%:p'), 'autoload/')) > 1 ? (substitute(substitute(split(expand('%:p'), 'autoload/')[-1], '/', '#', 'g'), '\.vim', '', 'g') . '#') : ''`${1:name}(${2:args})
+endfunction
+endsnippet
+
+snippet sf "Script function with fold"
+function! ${1:name}(${2:args}) " {{{1
+endfunction
+" }}}
+endsnippet
+
+snippet gf "Global function with fold"
+function! `!v len(split(@%, 'autoload/')) > 1 ? substitute(substitute(split(@%, 'autoload/')[-1], '/', '#', 'g'), '\.vim', '', 'g') . '#' : ''`${1:name}(${2:args}) " {{{1
+endfunction
+" }}}
+endsnippet
+
+snippet hl "Highlight function"
+call g:HL("${1:group}", "${2:foreground}", "${3:background}", "${4:style}") 
+endsnippet

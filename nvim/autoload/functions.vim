@@ -8,26 +8,9 @@ function! functions#Initialize()
 	" Create a command to show how many matches of a pattern are in a file
 	command -nargs=1 GetMatches let g:regex_list = functions#GetMatches(<args>) | echo string(len(g:regex_list)) 'matches found, check g:regex_list for full list'
 	command TestImage call functions#ShowImage('~/Pictures/Wallpaper/MountainWallpaper.jpg', 0, 0, 20, 20)
+
+	command YankCycle call functions#YankCycle()
 endfunction
-
-" Enable settings for gui mode {{{1
-function! functions#GuiMode()
-	highlight Statusline cterm=none gui=none
-	highlight StatusLineNC cterm=none gui=none
-
-	ComplexStatusline
-	call tiler#colors#Enable()
-
-	let current_window = win_getid()
-	for i in range(1, winnr("$"))
-		call win_gotoid(win_getid(i))
-		set fillchars=vert:\ 
-	endfor
-	call win_gotoid(current_window)
-
-	WindowRender
-endfun
-" }}}
 
 " Open a floating window in the center of the screen {{{1
 function! functions#FloatingWindow()
@@ -85,12 +68,29 @@ function! functions#OpenInFloatingWindow(command)
 endfunction
 " }}}
 
+" Enable settings for gui mode {{{1
+function! functions#GuiMode()
+	highlight Statusline cterm=none gui=none
+	highlight StatusLineNC cterm=none gui=none
+
+	ComplexStatusline
+	call tiler#colors#Enable()
+
+	let current_window = win_getid()
+	for i in range(1, winnr("$"))
+		call win_gotoid(win_getid(i))
+		set fillchars=vert:\ 
+	endfor
+	call win_gotoid(current_window)
+
+	WindowRender
+endfun
+" }}}
 " Get the character under the cursor {{{1
 function! functions#Getchar()
 	return strcharpart(strpart(getline('.'), col('.') - 1), 0, 1)
 endfun
 " }}}
-
 " Java Imports {{{1
 function! functions#JavaInsertImport()
 	exe "normal mz"
@@ -136,7 +136,6 @@ function! functions#JavaInsertImport()
 	endtry
 endfunction
 " }}}
-
 " Add values of a regex to a list, g:regex_list {{{1
 function! functions#GetMatches(text, pattern)
 	let g:regex_list = []
@@ -152,7 +151,6 @@ function! functions#AddToRegexList(value)
 	return ''
 endfunction
 " }}}
-
 " Execute the current program {{{1
 function! functions#Execute()
 	let split = split(expand('%:t'), '\.')
@@ -178,7 +176,6 @@ function! functions#Execute()
 	endif
 endfunction
 " }}}
-
 " Get the syntax group of the current character " {{{
 function! functions#SyntaxGroup()
 	let coords = input("Input [LINE COLUMN] or leave blank for cursor: ")
@@ -195,14 +192,40 @@ function! functions#SyntaxGroup()
 				\ . synIDattr(synIDtrans(synID(line,col,1)),"name") . ">"
 endfunction
 " }}}
-
-" Get the foldlevel for note folding " {{{1
-function! functions#NoteFoldlevel(line)
-	let current_line = len(substitute(getline(a:line), '^\t*\zs.*', '', ''))
-	if a:line == line('$')
-		return current_line
-	else
-		let next_line = len(substitute(getline(a:line + 1), '^\t*\zs.*', '', ''))
-		return max([current_line, next_line])
-	endif
+" Clear all registers {{{1
+function! functions#ClearRegisters()
+	let regs=split('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/-"', '\zs')
+	for r in regs
+		call setreg(r, '')
+	endfor
 endfunction " }}}
+" Save a list of past registers, and easily cycle through them {{{1
+function! functions#YankCycle()
+	for i in [9, 8, 7, 6, 5, 4, 3, 2]
+		call setreg(i, getreg(i - 1))
+	endfor
+	call setreg(1, @")
+endfunction
+
+function! functions#YankGet(paste_key)
+	let registers_string = ""
+	let options_string = ""
+	for i in range(1, 9)
+		let reg = substitute(substitute(getreg(i), "\n", '↲', 'g'), '\t', ' ', 'g')[0:winwidth(0) - 10]
+		if reg == ''
+			break
+		endif
+
+		let registers_string .= printf("%d: %s\n", i, reg)
+		let options_string .= i . "\n"
+	endfor
+
+	let register = confirm(registers_string, options_string)
+
+	if register == 0
+		return
+	endif
+
+	execute printf('norm! "%d%s', register, a:paste_key)
+endfunction
+" }}}

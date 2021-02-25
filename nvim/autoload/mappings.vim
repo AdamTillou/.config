@@ -46,27 +46,38 @@ function! mappings#Initialize()
 	imap <A-B> <Esc>Bi
 	" }}}
 	" Text modification mappings {{{1
-	noremap z X
-	nnoremap <silent> X d/\%#.\s*\S*\zs<CR>
-	nnoremap <silent> Z d/\ze\S*\s*\%#<CR>
-	inoremap <expr> <A-x> col('.') < col('$') ? '<Esc>lxi' : ''
-	inoremap <expr> <A-z> col('.') > 1 ? '<Esc>xi' : ''
-	inoremap <expr> <BS> col('.') > 1 ? '<Esc>xi' : ''
-	inoremap <expr> <A-X> col('.') < col('$') ? '<Esc>ld/\%#.\s*\S*\zs<CR>i' : ''
-	inoremap <expr> <A-Z> col('.') > 1 ? '<Esc>ld/\ze\S*\s*\%#<CR>i' : ''
+	noremap z "_X
+	nnoremap <silent> X "_d/\%#.\s*\S*\zs<CR>
+	nnoremap <silent> Z "_d/\ze\S*\s*\%#<CR>
+	inoremap <expr> <A-x> col('.') < col('$') ? '<Esc>l"_xi' : ''
+	inoremap <expr> <A-z> col('.') > 1 ? '<Esc>"_xi' : ''
+	inoremap <expr> <BS> col('.') > 1 ? '<Esc>"_xi' : ''
+	inoremap <expr> <A-X> col('.') < col('$') ? '<Esc>l"_d/\%#.\s*\S*\zs<CR>i' : ''
+	inoremap <expr> <A-Z> col('.') > 1 ? '<Esc>l"_d/\ze\S*\s*\%#<CR>i' : ''
 
-	noremap D dd
+	" Map v to operate on entire words
+	onoremap v iw
+	onoremap V iW
+
+	" Map z and x to operate to the beginning and end of the line
+	onoremap z 0
+	onoremap x $
+
+	" Map deleteing and yanking functions
+	noremap d "_d
+	nnoremap D "_dd
 	nnoremap dd 0"_d$
 
-	noremap C cc
+	nnoremap C "_cc
+	nnoremap c "_c
 
-	noremap s "0d
-	vnoremap s "0d
-	noremap S "0dd
-	nnoremap ss ^"0d$
+	noremap s :YankCycle<CR>d
+	noremap S :YankCycle<CR>dd
+	nnoremap ss :YankCycle<CR>^d$
 
-	noremap Y yy
-	nnoremap yy mz^"0y$`z
+	noremap y :YankCycle<CR>y
+	noremap Y :YankCycle<CR>yy
+	nnoremap yy :YankCycle<CR>mz^y$`z
 
 	" Map g+key to add to the register
 	nnoremap gaY "zyy:let @0 .= (@0[len(@0)-1] == "\n" ? "" : "\n") . @z<CR>
@@ -84,28 +95,19 @@ function! mappings#Initialize()
 	noremap gs "+d
 	noremap gS "+dd
 
-	noremap gp "+p
-	noremap gP "+P
+	nnoremap yp :call functions#YankGet('p')<CR>
+	nnoremap yP :call functions#YankGet('P')<CR>
+	nnoremap ygp :call functions#YankGet('gp')<CR>
+	nnoremap ygP :call functions#YankGet('gP')<CR>
 
-	" Map v to operate on entire words
-	onoremap v iw
-	onoremap V iW
+	nnoremap sp "+p
+	nnoremap sP "+P
+	nnoremap sgp "+gp
+	nnoremap sgP "+gP
 
-	" Map z and x to operate to the beginning and end of the line
-	onoremap z 0
-	onoremap x $
-
-	" Paste from the yank register
-	nnoremap p "0p
-	nnoremap P "0P
-	for i in range(26)
-		let q = 'abcdefghijklmnopqrstuvwxyg'[i]
-		execute printf('noremap "%sp "%sp', q, q)
-		execute printf('noremap "%sP "%sP', q, q)
-	endfor
-
-	inoremap <expr> <A-p> stridx(@0, "\n") == -1 ? '<Esc>"0pa' : '<Exc>"0pA'
-	inoremap <expr> <A-P> stridx(@0, "\n") == -1 ? '<Esc>mz"0p`za' : '<Exc>"0pA'
+	" Paste from insert mode
+	inoremap <expr> <A-p> stridx(@", "\n") == -1 ? '<Esc>pa' : '<Exc>pA'
+	inoremap <expr> <A-P> stridx(@", "\n") == -1 ? '<Esc>mzp`za' : '<Exc>pA'
 	" }}}
 	" Buffer related mappings 	{{{1
 	noremap ( :bp!<CR>

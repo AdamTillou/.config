@@ -27,10 +27,6 @@ function! settings#Initialize()
 	set conceallevel=1
 	set concealcursor=nvic
 
-	" Save words to a spellfile, but don't enable spelling by default
-	execute 'set spellfile=' . g:init#config . '/files/spellfile.add'
-	set nospell
-
 	" Set gui specific options
 	set guifont=FiraCode:h11 " Set the default font for gui mode
 	set linespace=3 " Set the spacing between each line

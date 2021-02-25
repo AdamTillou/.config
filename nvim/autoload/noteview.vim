@@ -221,7 +221,7 @@ function! noteview#CloseFold(line) " {{{1
 		let indent_text = substitute(current_text, '^\s*\zs.*', '', '')[0:-2]
 		let content_text = substitute(current_text, '^\s*\ze.*', '', '')
 		let spaces = repeat(' ', &shiftwidth - 2)
-		call setline(a:line, indent_text . spaces . '▸' . nr2char(folds_index + 1) . content_text)
+		call setline(a:line, indent_text . spaces . '▸' . nr2char(folds_index + 10000) . content_text)
 	endif
 
 	" Delete the folded lines
@@ -404,7 +404,7 @@ function! noteview#GetLineNumber(string) " {{{1
 		return -1
 
 	else
-		let number = char2nr(char) - 1
+		let number = char2nr(char) - 10000
 		return number
 	endif
 endfunction
