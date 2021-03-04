@@ -160,13 +160,13 @@ function! plugins#SetupWM() " {{{1
 	nnoremap <silent> <nowait> <C-w>s :SidebarToggleOpen<CR>
 	nnoremap <silent> <nowait> <C-a> :SidebarToggleFocus<CR>
 
+	" Create sidebars
+	let g:tiler#sidebars = {"filer":"FilerOpen", "taglist":"Tlist", "mundo":"MundoToggle"}
+
 	" Custom colors
 	let g:tiler#colors#sidebar = g:colors.sidebar
 	let g:tiler#colors#window = g:colors.bg
-	"let g:tiler#colors#current = g:colors.bg
-
-	" Create sidebars
-	let g:tiler#sidebars = {"filer":"FilerOpen", "taglist":"Tlist", "mundo":"MundoToggle"}
+	let g:tiler#colors#current = g:colors.bg
 
 	" Custom sidebar keybindings
 	nnoremap <silent> <A-1> :SidebarOpen filer<CR>

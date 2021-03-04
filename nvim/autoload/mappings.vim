@@ -47,6 +47,7 @@ function! mappings#Initialize()
 	" }}}
 	" Text modification mappings {{{1
 	noremap z "_X
+	noremap x "_x
 	nnoremap <silent> X "_d/\%#.\s*\S*\zs<CR>
 	nnoremap <silent> Z "_d/\ze\S*\s*\%#<CR>
 	inoremap <expr> <A-x> col('.') < col('$') ? '<Esc>l"_xi' : ''
@@ -63,7 +64,7 @@ function! mappings#Initialize()
 	onoremap z 0
 	onoremap x $
 
-	" Map deleteing and yanking functions
+	" Send deleted and changed text to the null register
 	noremap d "_d
 	nnoremap D "_dd
 	nnoremap dd 0"_d$
@@ -71,15 +72,20 @@ function! mappings#Initialize()
 	nnoremap C "_cc
 	nnoremap c "_c
 
-	noremap s :YankCycle<CR>d
-	noremap S :YankCycle<CR>dd
+	" Map s and y to copy text, and cycle it through the number registers
+	nnoremap s :YankCycle<CR>d
+	nnoremap S :YankCycle<CR>dd
 	nnoremap ss :YankCycle<CR>^d$
+	vnoremap <nowait> s <Esc>:YankCycle<CR>gvd
+	vnoremap <nowait> S <Esc>:YankCycle<CR>gvd
 
-	noremap y :YankCycle<CR>y
-	noremap Y :YankCycle<CR>yy
+	nnoremap y :YankCycle<CR>y
+	nnoremap Y :YankCycle<CR>yy
 	nnoremap yy :YankCycle<CR>mz^y$`z
+	vnoremap <nowait> y <Esc>:YankCycle<CR>gvy
+	vnoremap <nowait> Y <Esc>:YankCycle<CR>gvy
 
-	" Map g+key to add to the register
+	" Map ga+key to add to the register
 	nnoremap gaY "zyy:let @0 .= (@0[len(@0)-1] == "\n" ? "" : "\n") . @z<CR>
 	nnoremap gay "zyy:let @0 .= (@0[len(@0)-1] == "\n" ? "" : "\n") . @z<CR>
 	vnoremap gay "zy:let @0 .= (@0[len(@0)-1] == "\n" ? "" : "\n") . @z<CR>
@@ -88,17 +94,18 @@ function! mappings#Initialize()
 	nnoremap gas "zdd:let @0 .= (@0[len(@0)-1] == "\n" ? "" : "\n") . @z<CR>
 	vnoremap gas "zd:let @0 .= (@0[len(@0)-1] == "\n" ? "" : "\n") . @z<CR>
 
-	" Map g+key to use the system register
-	noremap gy "+y
-	noremap gY "+yy
-
-	noremap gs "+d
-	noremap gS "+dd
-
+	" Use y+p to open a menu to select a paste option
 	nnoremap yp :call functions#YankGet('p')<CR>
 	nnoremap yP :call functions#YankGet('P')<CR>
 	nnoremap ygp :call functions#YankGet('gp')<CR>
 	nnoremap ygP :call functions#YankGet('gP')<CR>
+
+	" Use s+key to use the system register
+	noremap sy "+y
+	noremap sY "+yy
+
+	noremap sd "+d
+	noremap sD "+dd
 
 	nnoremap sp "+p
 	nnoremap sP "+P
@@ -160,10 +167,10 @@ function! mappings#Initialize()
 	noremap <M-F1> <Nop>
 
 	" Disable comment spreading
-	inoremap <expr> <CR> (col(".") == 1 ? "<Right><Left>" : "<Left><Right>") . "<CR>-<C-u>"
-	noremap <CR> o-<C-u><Esc>
-	noremap o o-<C-u>
-	noremap O O-<C-u>
+	inoremap <expr> <CR> (col('.') == 1 ? '<Esc>' : '<Esc>l') . (col('.') == col('$') ? ':let @z = ""<CR>' : '"zd$') . 'o<Esc>^"_d$"zp^i'
+	nnoremap <CR> o-<C-u><Esc>
+	nnoremap o o-<C-u>
+	nnoremap O O-<C-u>
 
 	" Map Alt+q to esc
 	noremap <A-q> <Esc>l
@@ -194,12 +201,12 @@ function! mappings#Initialize()
 	nnoremap g= <C-a>
 
 	" Easier indenting
-	nnoremap > a<--><Esc>>>$?<--><CR>da<h
-	nnoremap < a<--><Esc><<$?<--><CR>da<h
+	nnoremap > a<--><Esc>>>$?<--><CR>"_da<h
+	nnoremap < a<--><Esc><<$?<--><CR>"_da<h
 	vnoremap > >gv
 	vnoremap < <gv
-	inoremap <A-a> <--><Esc><<$?<--><CR>da<i
-	inoremap <A-d> <--><Esc>>>?<--><CR>da<i
+	inoremap <A-a> <--><Esc><<$?<--><CR>"_da<i
+	inoremap <A-d> <--><Esc>>>?<--><CR>"_da<i
 
 	" Map space to toggle the current fold
 	nnoremap <Space> za

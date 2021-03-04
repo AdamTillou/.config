@@ -74,7 +74,6 @@ function! functions#GuiMode()
 	highlight StatusLineNC cterm=none gui=none
 
 	ComplexStatusline
-	call tiler#colors#Enable()
 
 	let current_window = win_getid()
 	for i in range(1, winnr("$"))
@@ -83,6 +82,10 @@ function! functions#GuiMode()
 	endfor
 	call win_gotoid(current_window)
 
+	" Two color environment
+	let g:colors.bg.cterm = 8
+	call tiler#colors#DetectColors()
+	call tiler#colors#Enable()
 	WindowRender
 endfun
 " }}}
@@ -210,19 +213,19 @@ endfunction
 function! functions#YankGet(paste_key)
 	let registers_string = ""
 	let options_string = ""
-	for i in range(1, 9)
+	for i in ['"'] + range(1, 9)
 		let reg = substitute(substitute(getreg(i), "\n", '↲', 'g'), '\t', ' ', 'g')[0:winwidth(0) - 10]
 		if reg == ''
 			break
 		endif
 
 		let registers_string .= printf("%d: %s\n", i, reg)
-		let options_string .= i . "\n"
+		let options_string .= (i == '"' ? 0 : i) . "\n"
 	endfor
 
-	let register = confirm(registers_string, options_string)
+	let register = confirm(registers_string, options_string) - 1
 
-	if register == 0
+	if register == -1
 		return
 	endif
 

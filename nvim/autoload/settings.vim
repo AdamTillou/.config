@@ -69,9 +69,6 @@ function! settings#Initialize()
 		let g:neovide_cursor_animation_length = 0
 	endif
 
-	" Reload stubborn settings when entering a python file
-	autocmd BufWinEnter *.py setlocal noexpandtab | setlocal shiftwidth=2 | setlocal tabstop=2
-
 	" Load syntax file for notes
 	autocmd BufWinEnter *.note exec 'source ' . g:init#config . '/syntax/note.vim'
 endfunction

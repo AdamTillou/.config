@@ -17,6 +17,7 @@ function! noteview#Settings() " {{{1
 
 	" Setup autocommands
 	autocmd BufWriteCmd *.noteview call noteview#Write()
+	autocmd InsertLeave *.noteview call noteview#ReformatTables()
 	" }}}
 	" Highlighting {{{2
 	" Parse syntax groups
@@ -39,9 +40,12 @@ function! noteview#Settings() " {{{1
 	syntax match noteSectionLine /^\s*\([▾▸].\)\?\s*##$/ contains=noteIndicator,noteSection
 
 	" Set different effects for each group
-	let title_color = {"gui": "#FFD75F", "cterm": "221"}
-	let topic_color = {"gui": "#5FAFD7", "cterm": "74"}
-	let section_color = {"gui": "#FF87AF", "cterm": "211"}
+	" let title_color = {"gui": "#FFD75F", "cterm": "221"}
+	" let topic_color = {"gui": "#5FAFD7", "cterm": "74"}
+	" let section_color = {"gui": "#FF87AF", "cterm": "211"}
+	let title_color = g:colors.fg
+	let topic_color = g:colors.fg
+	let section_color = g:colors.fg
 	call g:HL('noteTitle', title_color, '', 'bold,underline')
 	call g:HL('noteTopicLine', topic_color, '', 'bold')
 	call g:HL('noteTopic', topic_color, '', 'bold,underline')
@@ -56,6 +60,16 @@ function! noteview#Settings() " {{{1
 	nnoremap <silent> <buffer> <Space> :call noteview#ToggleFold(line('.'))<CR>
 	nnoremap <silent> <buffer> g<Space> :call noteview#FullyToggleFold(line('.'))<CR>
 	nnoremap <silent> <buffer> gZ z
+	inoremap <buffer> <A-i>vv \vec{v}
+	inoremap <buffer> <A-i>vu \vec{u}
+	inoremap <buffer> <A-i>vi \vec{i}
+	inoremap <buffer> <A-i>vj \vec{j}
+	inoremap <buffer> <A-i>v< ⟨⟩<Left>
+	inoremap <buffer> <A-i>* \cdot 
+	inoremap <buffer> <A-i>, ,\enspace 
+	noremap <silent> <Tab> <Esc>/│ .<CR>2lvt│h
+	noremap <silent> <S-Tab> <Esc>?│ .<CR>n2lvt│h
+	noremap <silent> t<CR> yyp:s/[^│^ ^	]/ /g<CR>^2lvt│h
 	" }}}
 endfunction
 " }}}
@@ -77,7 +91,7 @@ function! noteview#NoteToNoteview() " {{{1
 
 	" Go to the view buffer and set the lines
 	execute view_buffer . 'buffer'
-	1,$delete
+	1,$delete _
 	call nvim_buf_set_lines(view_buffer, 0, 1, 0, note_text)
 
 	" Add an extra tab to the beginning of each line
@@ -87,12 +101,15 @@ function! noteview#NoteToNoteview() " {{{1
 		1,$s/^/\t/
 	endif
 
+	" Format tables
+	call noteview#FormatTables()
+
 	" Close all of the folds
 	call noteview#CloseAllFolds()
 
 	" Remove the last line if it is blank
 	if substitute(getline('$'), '\s*', '', '') == ''
-		$delete
+		$delete _
 	endif
 
 	" Go to the beginning of the document
@@ -122,13 +139,13 @@ function! noteview#NoteviewToNote() " {{{1
 
 	" Restore the noteview buffer to how it was previously
 	execute noteview_buffer . 'buffer'
-	1,$delete
+	1,$delete _
 	call nvim_buf_set_lines(0, 0, 1, 0, noteview_layout)
 	call cursor(noteview_cursor)
 
 	" Go to the note buffer and add the lines of the expanded noteview buffer
 	execute note_buffer . 'buffer'
-	1,$delete
+	1,$delete _
 	call nvim_buf_set_lines(note_buffer, 0, 1, 0, noteview_text)
 
 	" Remove the extra tab from lines that don't have a fold indicator
@@ -142,6 +159,9 @@ function! noteview#NoteviewToNote() " {{{1
 
 	" Remove image filler lines if there are any
 	silent! %s/^\s*<<imgline>>\n//g
+
+	" Unformat tables
+	call noteview#UnformatTables()
 endfunction
 " }}}
 
@@ -154,6 +174,9 @@ function! noteview#Write() " {{{1
 
 	" Return to the noteview buffer
 	execute b:view_buffer . 'buffer'
+
+	" Reformat tables
+	call noteview#ReformatTables()
 endfunction
 " }}}
 
@@ -196,8 +219,7 @@ function! noteview#CloseFold(line) " {{{1
 
 		" Remove the fold indicator if it used to be a fold
 		if current_status == 'open'
-			execute a:line . 's/^\t*\zs\s*▾\s*/\t/'
-			execute a:line . 's/\d\+$//'
+			silent! execute a:line . 's/^\t*\zs\s*▾./\t/'
 		endif
 
 		return
@@ -227,7 +249,7 @@ function! noteview#CloseFold(line) " {{{1
 	" Delete the folded lines
 	let first_line = a:line + 1
 	let last_line = check_line - 1
-	execute printf('%d,%d delete', first_line, last_line)
+	execute printf('%d,%d delete _', first_line, last_line)
 
 	" Return to the origional cursor position
 	call cursor(cursor_location)
@@ -421,5 +443,106 @@ function! noteview#GetLineIndent(string) " {{{1
 	else
 		return space_count + 2
 	endif
+endfunction
+" }}}
+
+function! noteview#FormatTables() " {{{1
+	" Remove the extra indent
+	silent! %s/^\t*\zs\t|/|/
+
+	" Format all of the tables
+	silent! g/<<table>>/call noteview#FormatTable(line('.') + 1)
+
+	" Remove the table tags
+	silent! g/<<table>>/delete _
+endfunction
+" }}}
+function! noteview#UnformatTables() " {{{1
+	" Add table tags
+	silent! %s/^\s*\zs┌.*/<<table>>/
+
+	" Replace table characters with pipes
+	silent! g/^\s*╞/delete _
+	silent! g/^\s*└/delete _
+	silent! g/^\s*│/s/^\s*\zs│ \+/| /
+	silent! g/^\s*|/s/ \+│$/ |/
+	silent! g/^\s*|/s/ \+│ / | /g
+	silent! g/^\s*|/s/^/\t/
+endfunction
+" }}}
+function! noteview#ReformatTables() " {{{1
+	let line_is_in_table = substitute(getline('.'), '^\s*│', '', '') != getline('.')
+
+	if line_is_in_table
+		norm! 
+		let cursor_location = [line('.'), col('.')]
+		call noteview#UnformatTables()
+		call noteview#FormatTables()
+		call cursor(cursor_location)
+		norm! a
+	endif
+endfunction
+" }}}
+function! noteview#FormatTable(table_start) " {{{1
+	call cursor(a:table_start, 1)
+	let table_columns = len(substitute(getline('.'), '[^|]', '', 'g')) - 1
+	let indent_string = substitute(getline('.'), '^\s*\zs.*', '', '')
+	call append(a:table_start - 1, [indent_string . repeat('|', table_columns + 1)])
+	call append(a:table_start + 1, [indent_string . repeat('|', table_columns + 1)])
+
+	" Get the last line in the table, and insert lines at the beginning and end
+	call cursor(a:table_start, 1)
+	while getline('.') != '' && substitute(getline('.'), '^\s*|.*|$', '', '') == ''
+		norm! ^r│j
+	endwhile
+	let table_end = line('.')
+	call append(table_end - 1, [indent_string . '│' . repeat('|', table_columns)])
+
+	for i in range(1, table_columns)
+		" Get the maximum column of the first row
+		call cursor(a:table_start, 1)
+		let max_col = 0
+		while line('.') < table_end
+			norm! 0f|
+			let display_col = strdisplaywidth(getline('.')[0:col('.')])
+			if display_col > max_col
+				let max_col = display_col
+			endif
+			norm! j
+		endwhile
+
+		" Format the first row of the table
+		call cursor(a:table_start, 1)
+		while line('.') <= table_end
+			norm! 0f|
+			let spaces_to_insert = max_col - strdisplaywidth(getline('.')[0:col('.')])
+			execute 'norm! i' . repeat(' ', spaces_to_insert) . ''
+			norm! j
+		endwhile
+
+		" Replace the & signs with vertical lines
+		call cursor(a:table_start, 1)
+		while line('.') <= table_end
+			norm! 0f|
+			norm! r│
+			norm! j
+		endwhile
+	endfor
+
+	" Format the beginning and end lines as edges
+	execute a:table_start . 's/ /─/g'
+	execute a:table_start . 's/^\s*\zs│/┌/'
+	execute a:table_start . 's/│$/┐/'
+	execute a:table_start . 's/│/┬/g'
+
+	execute string(a:table_start + 2) . 's/ /═/g'
+	execute string(a:table_start + 2) . 's/^\s*\zs│/╞/'
+	execute string(a:table_start + 2) . 's/│$/╡/'
+	execute string(a:table_start + 2) . 's/│/╪/g'
+
+	execute table_end . 's/ /─/g'
+	execute table_end . 's/^\s*\zs│/└/'
+	execute table_end . 's/│$/┘/'
+	execute table_end . 's/│/┴/g'
 endfunction
 " }}}

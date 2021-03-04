@@ -48,11 +48,12 @@ function! colors#ColorVariables() " {{{1
 	let g:colors.purple = {"gui": "#AF87D7", "cterm": "140"}
 
 	let g:colors.sidebar = {"gui": "#222630", "cterm": "NONE"}
-	let g:colors.bg = {"gui": "#293039", "cterm": "8"}
+	let g:colors.bg = {"gui": "#293039", "cterm": "NONE"}
 	let g:colors.active_bg = g:colors.bg
 	let g:colors.popup = {"gui": "#30343C", "cterm": "239"}
 endfunction " }}}
 function! colors#ColorGroups() " {{{1
+	highlight clear
 	" Sidebar groups
 	call g:HL("Sidebar", g:colors.fg, g:colors.sidebar, "")
 	call g:HL("SidebarEOB", g:colors.sidebar, g:colors.sidebar, "")
