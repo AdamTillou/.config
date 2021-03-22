@@ -10,6 +10,11 @@ function! functions#Initialize()
 	command TestImage call functions#ShowImage('~/Pictures/Wallpaper/MountainWallpaper.jpg', 0, 0, 20, 20)
 
 	command YankCycle call functions#YankCycle()
+	
+	" Map commands in insert mode for superscript and subscript mode
+	imap <A-.> <Esc>:call functions#UnicodeMode('superscript')<CR>i
+	imap <A-,> <Esc>:call functions#UnicodeMode('subscript')<CR>i
+	imap <A-=> <Esc>:call functions#UnicodeMode('normal')<CR>i
 endfunction
 
 " Open a floating window in the center of the screen {{{1
@@ -86,7 +91,7 @@ function! functions#GuiMode()
 	let g:colors.bg.cterm = 8
 	call tiler#colors#DetectColors()
 	call tiler#colors#Enable()
-	WindowRender
+	silent! WindowRender
 endfun
 " }}}
 " Get the character under the cursor {{{1
@@ -230,5 +235,28 @@ function! functions#YankGet(paste_key)
 	endif
 
 	execute printf('norm! "%d%s', register, a:paste_key)
+endfunction
+" }}}
+" Create a mode for inserting exponents {{{1
+function! functions#UnicodeMode(mode)
+	let superscripts = {'0':'⁰', '1':'¹', '2':'²', '3':'³', '4':'⁴', '5':'⁵', '6':'⁶', '7':'⁷', '8':'⁸', '9':'⁹',
+				\ '+':'⁺', '-':'⁻', '=':'⁼', '(':'⁽', ')':'⁾'}
+	let subscripts = {'0':'₀', '1':'₁', '2':'₂', '3':'₃', '4':'₄', '5':'₅', '6':'₆', '7':'₇', '8':'₈', '9':'₉',
+				\ '+':'₊', '-':'₋', '=':'₌', '(':'₍', ')':'₎',
+				\ 'a':'ₐ', 'e':'ₑ', 'h':'ₕ', 'k':'ₖ', 'l':'ₗ', 'm':'ₘ', 'n':'ₙ', 'o':'ₒ', 'p':'ₚ', 's':'ₛ', 't':'ₜ', 'x':'ₓ'}
+	if a:mode == 'normal'
+		for i in keys(subscripts)
+			silent! execute 'iunmap ' . i
+		endfor
+		
+	elseif a:mode == 'superscript'
+		for i in keys(superscripts)
+			silent! execute 'inoremap ' . i . ' ' . superscripts[i]
+		endfor
+	elseif a:mode == 'subscript'
+		for i in keys(subscripts)
+			silent! execute 'inoremap ' . i . ' ' . subscripts[i]
+		endfor
+	endif
 endfunction
 " }}}

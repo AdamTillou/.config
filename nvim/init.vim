@@ -35,7 +35,6 @@ call leader#Initialize()
 call plug#begin(g:init#config . "/plugins")
 " Completion
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'tbodt/deoplete-tabnine', { 'do': './install.sh' }
 
 " Snippets
 Plug 'sirver/UltiSnips'
@@ -81,9 +80,6 @@ Plug 'dbeniamine/cheat.sh-vim'
 
 " Tables
 Plug 'dhruvasagar/vim-table-mode'
-
-" Email client
-Plug 'soywod/iris.vim'
 
 call plug#end() " }}}
 call plugins#Initialize()

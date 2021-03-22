@@ -95,7 +95,7 @@ function! noteview#NoteToNoteview() " {{{1
 	call nvim_buf_set_lines(view_buffer, 0, 1, 0, note_text)
 
 	" Add an extra tab to the beginning of each line
-	if substitute(getline(1), '^\s*\~\~\~.*\~\~\~$', '', 'g') == '' && getline(1) != ''
+	if substitute(getline(1), '\s*\~\~\~.*\~\~\~', '', 'g') == '' && getline(1) != ''
 		2,$s/^/\t/
 	else
 		1,$s/^/\t/
@@ -351,7 +351,7 @@ endfunction
 
 function! noteview#CloseAllFolds() " {{{1
 	" Find the highest parent of the cursor position
-	while noteview#GetLineIndent(getline('.')) > 1
+	while noteview#GetLineIndent(getline('.')) > 1 && line('.') > 1
 		norm! k
 	endwhile
 
@@ -360,7 +360,7 @@ function! noteview#CloseAllFolds() " {{{1
 
 	" Each run of the loop closes one line
 	norm! G
-	while line('.') > 2
+	while line('.') > 1
 		norm! k
 		silent! call noteview#CloseFold(line('.'))
 	endwhile

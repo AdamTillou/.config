@@ -25,6 +25,7 @@ function! leader#Initialize()
 				\ 	{'letter':'i', 'name':'Detect Indent', 'command':':DetectIndent<CR>'},
 				\ 	{'letter':'g', 'name':'Gui Mode', 'command':':call functions#GuiMode()<CR>'},
 				\		{'letter':'w', 'name':'Window Manager', 'command':':call tiler#GlobalToggle()<CR>'},
+				\ 	{'letter':'c', 'name':'Completion', 'command':':execute "call deoplete#" . (deoplete#is_enabled() ? "disable()" : "enable()")<CR>'}
 				\ ]},
 				\ {'letter':'g', 'name':'Get', 'command':[
 				\ 	{'letter':'s', 'name':'Syntax Group', 'command':':echo functions#SyntaxGroup()<CR>'},

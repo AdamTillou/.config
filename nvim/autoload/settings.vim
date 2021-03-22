@@ -71,4 +71,7 @@ function! settings#Initialize()
 
 	" Load syntax file for notes
 	autocmd BufWinEnter *.note exec 'source ' . g:init#config . '/syntax/note.vim'
+
+	" Enable spanish spellcheck for spanish docs
+	autocmd BufRead *Spanish* set spelllang=en,es
 endfunction

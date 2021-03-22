@@ -166,24 +166,20 @@ function! mappings#Initialize()
 	noremap <F1> <Nop>
 	noremap <M-F1> <Nop>
 
-	" Disable comment spreading
-	inoremap <expr> <CR> (col('.') == 1 ? '<Esc>' : '<Esc>l') . (col('.') == col('$') ? ':let @z = ""<CR>' : '"zd$') . 'o<Esc>^"_d$"zp^i'
+	" Enable enter in normal mode
 	nnoremap <CR> o-<C-u><Esc>
-	nnoremap o o-<C-u>
-	nnoremap O O-<C-u>
 
 	" Map Alt+q to esc
-	noremap <A-q> <Esc>l
-	noremap! <A-q> <Esc>l
-	noremap <A-Q> <Esc>l
-	noremap! <A-Q> <Esc>l
+	inoremap <expr> <Esc> col('.') == 1 ? '<Esc>' : '<Esc>l'
+	inoremap <expr> <A-q> col('.') == 1 ? '<Esc>' : '<Esc>l'
+	inoremap <expr> <A-Q> col('.') == 1 ? '<Esc>' : '<Esc>l'
+	cnoremap <A-q> <Esc>
+	cnoremap <A-Q> <Esc>
+	noremap <A-q> <Esc>
+	noremap <A-Q> <Esc>
 
 	" Map U to redo
 	noremap U <C-r>
-
-	" Map regular i and a to go before/after visual selections
-	vnoremap <nowait> i I
-	vnoremap <nowait> a A
 
 	" Map gf to format the file
 	noremap gf mzgg=G`z
@@ -228,6 +224,10 @@ function! mappings#Initialize()
 
 	" Map Alt Enter to open a new line
 	inoremap <A-> <Esc>o
-
+	
+	" Map Alt u to insert unicode characters
+	inoremap <A-u>x ×
+	inoremap <A-u>1/2 ½
+	
 	" }}}
 endfunction
